@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{56A947B0-1DF8-4116-8152-AB2D4B6042C3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Codeer.Friendly.Windows</RootNamespace>
+    <AssemblyName>Codeer.Friendly.Windows</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Codeer.Friendly.Windows.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Codeer.Friendly.Windows.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Codeer.Friendly.Windows.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release-Eng|AnyCPU'">
+    <OutputPath>bin\Release-Eng\</OutputPath>
+    <DefineConstants>TRACE;ENG</DefineConstants>
+    <DocumentationFile>bin\Release\Codeer.Friendly.Windows.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Codeer.Friendly, Version=2.4.0.0, Culture=neutral, PublicKeyToken=6c44da6fca38aa86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Codeer.Friendly.2.4.0\lib\net20\Codeer.Friendly.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExecuteContext.cs" />
+    <Compile Include="Inside\CommunicationWindow.cs" />
+    <Compile Include="Inside\CommunicationWindowManager.cs" />
+    <Compile Include="Inside\CpuTargetCheckUtility.cs" />
+    <Compile Include="Inside\Debug.cs" />
+    <Compile Include="Inside\DllInjector.cs" />
+    <Compile Include="Inside\DllInstaller.cs" />
+    <Compile Include="Inside\DotNetExecutor\DotNetFriendlyControl.cs" />
+    <Compile Include="Inside\DotNetExecutor\DotNetFriendlyExecutor.cs" />
+    <Compile Include="Inside\DotNetExecutor\IAsyncInvoke.cs" />
+    <Compile Include="Inside\DotNetExecutor\TypeFinder.cs" />
+    <Compile Include="Inside\DotNetExecutor\UniqueNoManager.cs" />
+    <Compile Include="Inside\DotNetExecutor\VarAndType.cs" />
+    <Compile Include="Inside\DotNetExecutor\VarPool.cs" />
+    <Compile Include="Inside\FriendlyConnectorWindowInApp.cs" />
+    <Compile Include="Inside\FriendlyConnectorWindowInAppManager.cs" />
+    <Compile Include="Inside\NativeMethods.cs" />
+    <Compile Include="Inside\ProtocolMessageManager.cs" />
+    <Compile Include="Inside\ResourcesLocal.cs" />
+    <Compile Include="Inside\SystemController.cs" />
+    <Compile Include="Inside\SystemStartResponseReciever.cs" />
+    <Compile Include="Inside\SystemStarterInApp.cs" />
+    <Compile Include="Inside\SystemStarter.cs" />
+    <Compile Include="Inside\SystemControlInfo.cs" />
+    <Compile Include="Inside\SystemControlType.cs" />
+    <Compile Include="Inside\SystemControlWindowInApp.cs" />
+    <Compile Include="Inside\CopyDataProtocol\CopyDataProtocolInfo.cs" />
+    <Compile Include="Inside\CopyDataProtocol\ReceiveAfterSend.cs" />
+    <Compile Include="Inside\CopyDataProtocol\ReceiveForm.cs" />
+    <Compile Include="Inside\CopyDataProtocol\CopyDataProtocolTalker.cs" />
+    <Compile Include="Inside\FriendlyConnectorCore.cs" />
+    <Compile Include="Inside\TargetWindowExecutor.cs" />
+    <Compile Include="Inside\WindowsAppExpanderInApp.cs" />
+    <Compile Include="Inside\ContextOrderProtocolInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.ja.Designer.cs">
+      <DependentUpon>Resources.ja.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="WindowsAppExpander.cs" />
+    <Compile Include="WindowsAppFriend.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ja.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.ja.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Codeer.Friendly.Windows.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Resources\CodeerFriendlyWindows_x64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CodeerFriendlyWindows_x86.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Codeer.Friendly.Windows.Step.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release mkdir "../../../ReleaseBinary"
+if $(ConfigurationName) == Release-Eng mkdir "../../../ReleaseBinary"
+if $(ConfigurationName) == Release mkdir "../../../ReleaseBinary/ja"
+if $(ConfigurationName) == Release Copy "$(TargetPath)" "../../../ReleaseBinary/$(TargetFileName)"
+if $(ConfigurationName) == Release-Eng Copy "$(TargetDir)\$(TargetName).xml" "../../../ReleaseBinary/$(TargetName).xml"
+if $(ConfigurationName) == Release Copy "$(TargetDir)\$(TargetName).xml" "../../../ReleaseBinary/ja/$(TargetName).xml"
+if $(ConfigurationName) == Release Copy "$(TargetDir)\ja\$(TargetName).resources.dll" "../../../ReleaseBinary/ja/$(TargetName).resources.dll"
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

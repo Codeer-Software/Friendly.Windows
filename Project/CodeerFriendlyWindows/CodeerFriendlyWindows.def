@@ -1,0 +1,3 @@
+LIBRARY	"CodeerFriendlyWindows"
+EXPORTS
+   InitializeFriendly

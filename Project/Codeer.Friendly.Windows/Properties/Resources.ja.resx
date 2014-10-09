@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ErrorAppCommunication" xml:space="preserve">
+    <value>アプリケーションとの通信に失敗しました。
+対象アプリケーションが通信不能な状態になったか、
+シリアライズ不可能な型のデータを転送しようとした可能性があります。</value>
+  </data>
+  <data name="ErrorAppConnection" xml:space="preserve">
+    <value>アプリケーションとの接続に失敗しました。</value>
+  </data>
+  <data name="ErrorArgumentInvokeFormat" xml:space="preserve">
+    <value>[型 : {0}][操作 : {1}({2})]
+同名の操作が見つかりましたが、操作を実行できませんでした。
+引数指定が間違っている可能性があります。
+数値型、Enumも厳密に判定されるのでご注意お願いします。
+(例として、long型の引数にint型を渡しても別の型と判断され、解決に失敗します。)
+また、params付きの配列の場合は、その型の配列に格納して渡してください。</value>
+  </data>
+  <data name="ErrorArgumentInvokeFormatForObjectArray" xml:space="preserve">
+    <value>[型 : {0}][操作 : {1}({2})]
+同名の操作が見つかりましたが、操作を実行できませんでした。
+引数指定が間違っている可能性があります。
+params付きの配列の場合は、その型の配列に格納して渡してください。
+また、object[] の場合 params object[]と区別がつかず、分解されて引数に渡されます。
+そのため、object[]の要素にobject[]を入れて引き渡してください。
+object[] arg;//引き渡したいobject[]
+object[] tmpArg = new object[0];
+tmpArg[0] = arg;//これを引き渡してください。</value>
+  </data>
+  <data name="ErrorFriendlySystem" xml:space="preserve">
+    <value>ProgramDataフォルダ以下への書き込み権限がないことが考えられます。
+Codeer.Friendlyは初期実行時にProgramData/Codeer.Friendlyフォルダとそれ以下にいくつかのファイルを作成します。テストプロジェクトにこのフォルダへの書き込み権限を与えてください。</value>
+  </data>
+  <data name="ErrorDllLoad" xml:space="preserve">
+    <value>指定のプロセスとの接続に失敗しました。
+インストールに失敗している可能性があります。</value>
+  </data>
+  <data name="ErrorExecuteThreadWindowHandle" xml:space="preserve">
+    <value>アプリケーションとの通信に失敗しました。
+指定の実行対象スレッドに含まれるウィンドウは存在しません。
+もしくは既に破棄されました。
+スプラッシュウィンドウを表示するアプリケーションの場合は、起動直後にメインウィンドウがスプラッシュウィンドウになっている場合があります。
+明示的に期待のウィンドウのハンドルを指定してください。</value>
+  </data>
+  <data name="ErrorManyFoundConstractorFormat" xml:space="preserve">
+    <value>[new {0}({1})]
+指定の引数で実行できる可能性のあるコンストラクタが複数発見されました。
+引数に引き渡す型を明確にするか、もしくはOperationTypeInfoを使用してください。</value>
+  </data>
+  <data name="ErrorManyFoundInvokeFormat" xml:space="preserve">
+    <value>[型 : {0}][操作 : {1}({2})]
+指定の引数で実行できる可能性のある操作が複数発見されました。
+引数に引き渡す型を明確にするか、もしくはOperationTypeInfoを使用してください。</value>
+  </data>
+  <data name="ErrorNotFoundConstractorFormat" xml:space="preserve">
+    <value>[new {0}({1})]
+コンストラクタが見つかりませんでした。
+引数指定が間違っている可能性があります。
+数値型、Enumも厳密に判定されるのでご注意お願いします。
+(例として、long型の引数にint型を渡しても別の型と判断され、解決に失敗します。)
+また、params付きの配列の場合は、その型の配列に格納して渡してください。</value>
+  </data>
+  <data name="ErrorNotFoundConstractorFormatForObjectArray" xml:space="preserve">
+    <value>[new {0}({1})]
+コンストラクタが見つかりませんでした。
+引数指定が間違っている可能性があります。
+params付きの配列の場合は、その型の配列に格納して渡してください。
+また、object[] の場合 params object[]と区別がつかず、分解されて引数に渡されます。
+そのため、object[]の要素にobject[]を入れて引き渡してください。
+object[] arg;//引き渡したいobject[]
+object[] tmpArg = new object[0];
+tmpArg[0] = arg;//これを引き渡してください。</value>
+  </data>
+  <data name="ErrorNotFoundInvokeFormat" xml:space="preserve">
+    <value>[型 : {0}][操作 : {1}({2})]
+指定の操作が見つかりませんでした。</value>
+  </data>
+  <data name="ErrorOperationTypeArgInfoFormat" xml:space="preserve">
+    <value>[OperationTypeInfo.Arguments : ({0})][引数 : ({1})]
+操作型情報の引数指定が不正です。実際に引き渡している引数の数と型指定の数が一致しません。
+params付きの配列の場合は、その型の配列に格納して渡してください。</value>
+  </data>
+  <data name="ErrorOperationTypeArgInfoForObjectArrayFormat" xml:space="preserve">
+    <value>[OperationTypeInfo.Arguments : ({0})][引数 : ({1})]
+操作型情報の引数指定が不正です。実際に引き渡している引数の数と型指定の数が一致しません。
+params付きの配列の場合は、その型の配列に格納して渡してください。
+また、object[] の場合 params object[]と区別がつかず、分解されて引数に渡されます。
+そのため、object[]の要素にobject[]を入れて引き渡してください。
+object[] arg;//引き渡したいobject[]
+object[] tmpArg = new object[0];
+tmpArg[0] = arg;//これを引き渡してください。</value>
+  </data>
+  <data name="ErrorProcessAcess" xml:space="preserve">
+    <value>対象プロセスの操作に失敗しました。
+以下の可能性が考えられます。
+・CLRのバージョン指定が間違っている。
+・対象プロセスを操作する権限が足りていない。
+・接続中に対象プロセスが終了した。
+・指定のウィンドウハンドルのウィンドウが破棄された。
+スプラッシュウィンドウを表示するアプリケーションの場合は、起動直後にメインウィンドウがスプラッシュウィンドウになっている場合があります。
+明示的に期待のウィンドウのハンドルを指定してください。</value>
+  </data>
+  <data name="ErrorTargetCpuDifference" xml:space="preserve">
+    <value>プラットフォームターゲットがテスト対象とテストプロセスで異なります。合わせてください。</value>
+  </data>
+  <data name="HasNotEnumerable" xml:space="preserve">
+    <value>指定の変数はIEnumerableを実装していません。</value>
+  </data>
+  <data name="NullObjectOperation" xml:space="preserve">
+    <value>AppVarの中身がnullのオブジェクトに対して操作を呼び出しました。</value>
+  </data>
+  <data name="OutOfCommunicationNo" xml:space="preserve">
+    <value>同時通信数の上限に達しました。</value>
+  </data>
+  <data name="OutOfMemory" xml:space="preserve">
+    <value>アプリケーション内部で使用できる変数領域を使い切りました。</value>
+  </data>
+  <data name="UnknownTypeInfoFormat" xml:space="preserve">
+    <value>[{0}]
+指定の型が見つかりません。
+型フルネームが間違っているか、指定の型を含むモジュールが、まだロードされていない可能性があります。</value>
+  </data>
+  <data name="ErrorProcessOperation" xml:space="preserve">
+    <value>対象プロセスを操作する権限が足りていません。</value>
+  </data>
+  <data name="ErrorBinaryInstall" xml:space="preserve">
+    <value>使用するファイルが不正な状態で、かつ削除に失敗しました。
+以下のファイルを手動で削除してください。</value>
+  </data>
+  <data name="ErrorUnpredicatableClrVersion" xml:space="preserve">
+    <value>CLRのバージョンが予測できません。
+対象アプリ内に複数のCLRがロードされている可能性があります。
+対象のCLRのバージョンを明示するコンストラクタを使用してください。</value>
+  </data>
+  <data name="ObsoleteClrOrder" xml:space="preserve">
+    <value>CLRバージョン文字列を置き換えました。
+{0} -&gt; {1}
+指定の文字列は現在非推奨です。
+置き換え後の文字列(CLRの正式バージョン文字列)を使用するか、
+CLRのバージョンを指定しないコンストラクタを使ってください。</value>
+  </data>
+  <data name="ErrorInvalidThreadCall" xml:space="preserve">
+    <value>予期せぬスレッドからの呼び出しがありました。</value>
+  </data>
+</root>

@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CodeerFriendlyWindows_x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CodeerFriendlyWindows_x64.dll;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CodeerFriendlyWindows_x86" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CodeerFriendlyWindows_x86.dll;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ErrorAppCommunication" xml:space="preserve">
+    <value>Communication with the application failed.
+The target applcation may be unreachable or you may be trying to send
+data that cannot be serialized.</value>
+  </data>
+  <data name="ErrorAppConnection" xml:space="preserve">
+    <value>Failed to connect to application.</value>
+  </data>
+  <data name="ErrorArgumentInvokeFormat" xml:space="preserve">
+    <value>[type: {0}][operation: {1} ({2})]
+The specified operation name was found but could not be carried out.
+The arguments could be incorrect.
+Note that numerical types and Enums are strictly differentiated.
+(For example, even when passing an int as an argument for a long parameter, they are treated as different types and the call fails.)
+When calling a method with a params argument, please pass the argument as an array value.</value>
+  </data>
+  <data name="ErrorArgumentInvokeFormatForObjectArray" xml:space="preserve">
+    <value>[type: {0}][operation: {1} ({2})]
+An operation with the specified name was found, but could not be performed.
+The specified arguments may be incorrect.
+When calling an option with a params argument, please pass the value as an array.
+When passing object[] as a parameter, this cannot be distinguished from params object[].
+Please pass it as an element of an object[] array in this case.
+object[] arg;        // object[] to pass as a single argument.
+object[] tmpArg = new object[0];
+tmpArg [0] = arg;// Please pass tmpArg after doing this</value>
+  </data>
+  <data name="ErrorFriendlySystem" xml:space="preserve">
+    <value>Permission to write within the ProgramData folder appears to be denied. Codeer.Friendly creates a ProgramData/Codeer.Friendly and several files within that folder during initialization. Please give your test project write permission to this folder.</value>
+  </data>
+  <data name="ErrorDllLoad" xml:space="preserve">
+    <value>Failed to connect to the specified process.
+Installation may have failed.</value>
+  </data>
+  <data name="ErrorExecuteThreadWindowHandle" xml:space="preserve">
+    <value>Communication with the application failed.
+The indicated window in the target thread does not exist or has already been disposed.
+In applications that display a splash window, the main window may have become a splash window immediately after starting.
+Please specify the handle of the expected window of explicitly.</value>
+  </data>
+  <data name="ErrorManyFoundConstractorFormat" xml:space="preserve">
+    <value>[new {0}({1})]
+More than one constructor matching the specified arguments was found.
+Please clarify the arguments' types or use OperationTypeInfo.</value>
+  </data>
+  <data name="ErrorManyFoundInvokeFormat" xml:space="preserve">
+    <value>[type: {0}][operation: {1} ({2})]
+More than one operation matching the specified arguments was found.
+Please clarify arguments' types or use OperationTypeInfo.</value>
+  </data>
+  <data name="ErrorNotFoundConstractorFormat" xml:space="preserve">
+    <value>[new {0}({1})]
+The constructor was not found.
+The arguments specified may be incorrect.
+Note that numerical types and Enums are strictly differentiated.
+(For example, even when passing an int as an argument for a long parameter, they are treated as different types and the call fails.)
+When calling a method with a params argument, please pass the argument as an array value.</value>
+  </data>
+  <data name="ErrorNotFoundConstractorFormatForObjectArray" xml:space="preserve">
+    <value>[new {0}({1})]
+A constructor was not found.
+The arguments specified may be incorrect.
+When calling an option with a params argument, please pass the value as an array.
+When passing object[] as a parameter, this cannot be distinguished from params object[].
+Please pass it as an element of an object[] array in this case.
+object[] arg;       // object[] to pass as a singl argument
+object[] tmpArg = new object[0];
+tmpArg [0] = arf // please pass tmpArg after doing this</value>
+  </data>
+  <data name="ErrorNotFoundInvokeFormat" xml:space="preserve">
+    <value>[type : {0}][operation : {1} ({2})]
+The selected operation was not found.</value>
+  </data>
+  <data name="ErrorOperationTypeArgInfoFormat" xml:space="preserve">
+    <value>[OperationTypeInfo.Arguments: ({0})][argument : ({1})]
+The specified arguments are incorrect. The number of arguments do not match the number expected by the type.
+When calling a method with a params parameter, please place the arguments in an array.</value>
+  </data>
+  <data name="ErrorOperationTypeArgInfoForObjectArrayFormat" xml:space="preserve">
+    <value>[OperationTypeInfo.Arguments: ({0})] [argument : ({1})]
+The specified arguments are incorrect. The number of arguments do not match the number expected by the type.
+When calling a method with a params parameter, please place the arguments in an array.
+When passing object[] as a parameter, this cannot be distinguished from params object[].
+Please pass it as an element of an object[] array in this case.
+object[] arg;         // object[] to pass
+object[] tmpArg = new object[0];
+tmpArg [0] = arg; // please pass tmpArg after doing this</value>
+  </data>
+  <data name="ErrorProcessAcess" xml:space="preserve">
+    <value>Attempt to manipulate the specified process failed. One of the following could be the cause: (1) The specified CLR version is incorrect. (2) Permissions to manipulate the target process are insufficient. (3) The target process terminated during connection. (4) The window for the specified window handle was disposed. 
+In applications that display a splash window, the main window may have become a splash window immediately after starting.
+Please specify the handle of the expected window of explicitly.</value>
+  </data>
+  <data name="ErrorTargetCpuDifference" xml:space="preserve">
+    <value>Platform targets differ between the test target and test process. Please ensure they are the same.</value>
+  </data>
+  <data name="HasNotEnumerable" xml:space="preserve">
+    <value>The selected variable does not implement IEnumerable.</value>
+  </data>
+  <data name="NullObjectOperation" xml:space="preserve">
+    <value>An operation was executed on an AppVar containing a null value.</value>
+  </data>
+  <data name="OutOfCommunicationNo" xml:space="preserve">
+    <value>The maximum of the number of concurrent transmissions has been exceeded.</value>
+  </data>
+  <data name="OutOfMemory" xml:space="preserve">
+    <value>The available variable space in the application was exceeded.</value>
+  </data>
+  <data name="UnknownTypeInfoFormat" xml:space="preserve">
+    <value>[{0}]
+The selected type was not found.
+The specified type's full name is incorrect or the module containing the type has not yet been loaded.</value>
+    <comment>22</comment>
+  </data>
+  <data name="ErrorProcessOperation" xml:space="preserve">
+    <value>Permissions to manipulate the target process are insufficient.</value>
+  </data>
+  <data name="ErrorBinaryInstall" xml:space="preserve">
+    <value>The file in use is in an invalid state and could not be deleted. Please manually delete the following file.</value>
+  </data>
+  <data name="ErrorUnpredicatableClrVersion" xml:space="preserve">
+    <value>Failed to detect the CLR version. Multiple CLRs may be loaded in the target application. Please explicitly specify the CLR version in the constructor.</value>
+  </data>
+  <data name="ObsoleteClrOrder" xml:space="preserve">
+    <value>The CLR version string was replaced. The specified string is deprecated. Please use the post-replacement version string (official CLR version string) or the version of the constructor that does not take a CLR version.</value>
+  </data>
+  <data name="ErrorInvalidThreadCall" xml:space="preserve">
+    <value>There was a call from an unexpected thread.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Codeer_Friendly_Windows_Step" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Codeer.Friendly.Windows.Step.dll;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+</root>
