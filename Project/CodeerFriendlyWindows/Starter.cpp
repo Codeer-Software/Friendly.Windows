@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include <memory>
 #pragma comment(lib, "mscoree.lib")
 #import "mscorlib.tlb" raw_interfaces_only \
 	high_property_prefixes("_get", "_put", "_putref") \
@@ -159,6 +159,174 @@ namespace {
 		return !FAILED(hr);
 	}
 
+	//指定のドメインでインスタンスを生成して、そのメソッドを呼び出し
+	//メソッドの型は int method(string arg);
+	BOOL ExecuteInstanceMethod(
+		_AppDomainPtr pDomain,
+		LPCWSTR szAssemblyPath,
+		LPCWSTR szClass,
+		LPCWSTR szMethod,
+		LPCWSTR szArg,
+		variant_t& ret)
+	{
+		//破棄用
+		struct Data {
+			_ObjectHandle* phObj;
+			VARIANT varObj;
+			VARIANT* pVarObj;
+			_ObjectPtr pObj;
+			SAFEARRAY* pArgs;
+			_TypePtr pType;
+
+			Data() : phObj(), pVarObj(), pObj(), pArgs(), pType() {}
+
+			~Data() {
+				if (pArgs)::SafeArrayDestroy(pArgs);
+				if (pType)pType->Release();
+				if (pObj)pObj->Release();
+				if (pVarObj)VariantClear(pVarObj);
+				if (phObj)phObj->Release();
+			}
+		}data;
+
+		//インスタンス生成
+		auto hr = pDomain->CreateInstanceFrom(_bstr_t(szAssemblyPath), _bstr_t(szClass), &data.phObj);
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+
+		hr = data.phObj->Unwrap(&data.varObj);
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+		data.pVarObj = &data.varObj;
+
+		hr = data.varObj.pdispVal->QueryInterface(IID_PPV_ARGS(&data.pObj));
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+
+		//引数作成
+		data.pArgs = SafeArrayCreateVector(VT_VARIANT, 0, 1);
+		VARIANT* pVarArg;
+		hr = SafeArrayAccessData(data.pArgs, reinterpret_cast<void**>(&pVarArg));
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+
+		V_VT(pVarArg) = VT_BSTR;
+		V_BSTR(pVarArg) = _bstr_t(szArg);
+
+		hr = SafeArrayUnaccessData(data.pArgs);
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+
+		//タイプ取得
+		hr = data.pObj->GetType(&data.pType);
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+
+		//リフレクションでメソッド実行
+		hr = data.pType->InvokeMember_3(_bstr_t(szMethod), static_cast<BindingFlags>(
+			BindingFlags_InvokeMethod | BindingFlags_Instance | BindingFlags_Public),
+			nullptr, data.varObj, data.pArgs, &ret);
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	//アプリケーションドメインの列挙
+	//指定があれば合致するドメインで開始処理を実行
+	BOOL EnumDomainsAndExecute(
+		LPCWSTR szVersion,
+		LPCWSTR szStepAssembly,
+		LPCWSTR szGetIDClass,
+		LPCWSTR szGetIDMethod,
+		std::vector<int>& ids,
+		int executeDomainId,
+		LPCWSTR szStartClass,
+		LPCWSTR szStartMethod,
+		LPCWSTR szStartArgs)
+	{
+		CLRInterfaces interfaces;
+		int errNo = 0;
+		if (!interfaces.Init(szVersion, errNo)) {
+			return FALSE;
+		}
+
+		//破棄用
+		struct Data {
+			ICorRuntimeHost* pCorRuntimeHost;
+			HDOMAINENUM hEnum;
+			IUnknownPtr pDomainSrc;
+			_AppDomainPtr pDomain;
+			Data() : pCorRuntimeHost(), hEnum(), pDomainSrc(), pDomain() {}
+			~Data() {
+				if (pDomainSrc) pDomainSrc->Release();
+				if (pDomain) pDomain->Release();
+				if (hEnum) pCorRuntimeHost->CloseEnum(hEnum);
+				if (pCorRuntimeHost) pCorRuntimeHost->Release();
+			}
+			void ReleaseDomain() {
+				if (pDomainSrc) pDomainSrc->Release();
+				pDomainSrc = nullptr;
+				if (pDomain) pDomain->Release();
+				pDomain = nullptr;
+			}
+		}data;
+
+		//ドメイン列挙
+		auto hr = interfaces.pRuntimeInfo->GetInterface(CLSID_CorRuntimeHost, IID_PPV_ARGS(&data.pCorRuntimeHost));
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+
+		hr = data.pCorRuntimeHost->EnumDomains(&data.hEnum);
+		if (FAILED(hr)) {
+			return FALSE;
+		}
+
+		while (data.pCorRuntimeHost->NextDomain(data.hEnum, &data.pDomainSrc) == S_OK) {
+			hr = data.pDomainSrc->QueryInterface(IID_PPV_ARGS(&data.pDomain));
+			if (FAILED(hr)) {
+				return FALSE;
+			}
+
+			//ドメインのID取得
+			variant_t ret;
+			if (!ExecuteInstanceMethod(
+				data.pDomain,
+				szStepAssembly,
+				szGetIDClass,
+				szGetIDMethod,
+				L"",
+				ret))
+			{
+				return FALSE;
+			}
+			ids.push_back(ret.intVal);
+
+			//指定があれば開始処理実行
+			if (szStartClass && ret.intVal == executeDomainId) {
+				if (!ExecuteInstanceMethod(
+					data.pDomain,
+					szStepAssembly,
+					szStartClass,
+					szStartMethod,
+					szStartArgs,
+					ret))
+				{
+					return FALSE;
+				}
+			}
+			data.ReleaseDomain();
+		}
+		return TRUE;
+	}
+
 	/**
 		@brief	初期化
 		@param pStartInfo 開始情報
@@ -247,4 +415,46 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 		::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, 0);
 	}
 	return 0;
+}
+
+//ドメイン列挙
+int __stdcall EnumDomains(
+	LPCWSTR szVersion,
+	LPCWSTR szStepAssembly,
+	LPCWSTR szGetIDClass,
+	LPCWSTR szGetIDMethod,
+	int* ids,
+	int size)
+{
+	std::vector<int> vecIds;
+	if (!EnumDomainsAndExecute(szVersion, szStepAssembly, szGetIDClass, szGetIDMethod, vecIds, -1, nullptr, nullptr, nullptr)) {
+		return -1;
+	}
+	for (int i = 0; i < (int)vecIds.size() && i < size; i++) {
+		ids[i] = vecIds[i];
+	}
+	return (int)vecIds.size();
+}
+
+//指定のドメインをFriendlyでの操作用に初期化
+BOOL __stdcall InitializeAppDomain(
+	LPCWSTR szVersion,
+	LPCWSTR szStepAssembly,
+	LPCWSTR szGetIDClass,
+	LPCWSTR szGetIDMethod,
+	LPCWSTR szStartClass,
+	LPCWSTR szStartMethod,
+	int id,
+	LPCWSTR pStartInfo)
+{
+	std::vector<std::wstring> vec;
+	SplitArguments((LPCWSTR)pStartInfo, '\t', vec);
+	if (vec.size() != 7) {
+		return FALSE;
+	}
+	std::vector<int> vecIds;
+	if (!EnumDomainsAndExecute(szVersion, szStepAssembly, szGetIDClass, szGetIDMethod, vecIds, id, szStartClass, szStartMethod, vec[6].c_str())) {
+		return FALSE;
+	}
+	return TRUE;
 }

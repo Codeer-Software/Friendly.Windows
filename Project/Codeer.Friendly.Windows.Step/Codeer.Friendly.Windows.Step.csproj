@@ -40,7 +40,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppDomainBridge.cs" />
+    <Compile Include="AppDomainControl.cs" />
     <Compile Include="AssemblyResolver.cs" />
+    <Compile Include="StartStepWrap.cs" />
     <Compile Include="TypeFinder.cs" />
     <Compile Include="StartStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

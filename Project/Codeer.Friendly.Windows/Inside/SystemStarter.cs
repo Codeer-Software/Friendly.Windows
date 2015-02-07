@@ -23,6 +23,12 @@ namespace Codeer.Friendly.Windows.Inside
         /// </summary>
         const int ERR_UNPREDICATABLE_CLR_VERSION = 1;
 
+        /// <summary>
+        /// 開始処理
+        /// </summary>
+        /// <param name="args">起動引数</param>
+        internal delegate void ExecuteStart(string args);
+
 		/// <summary>
 		/// 起動。
 		/// </summary>
@@ -77,26 +83,33 @@ namespace Codeer.Friendly.Windows.Inside
 		}
 
         /// <summary>
+        /// デフォルト以外のAppDomainで起動。
+        /// </summary>
+        /// <param name="processId">プロセスID。</param>
+        /// <param name="initializeThreadWindowHandle">初期化を実行させるスレッドに属するウィンドウのハンドル。</param>
+        /// <param name="start">開始処理</param>
+        /// <returns>システムコントローラー。</returns>
+        internal static SystemController StartInOtherAppDomain(int processId, IntPtr initializeThreadWindowHandle, ExecuteStart start)
+        {
+            return StartInApp("nouse", "nouse", processId, initializeThreadWindowHandle, start);
+        }
+
+        /// <summary>
         /// プロセスでシステムを起動させる。
         /// </summary>
-        /// <param name="processHandle">対象プロセス操作ハンドル。</param>
+        /// <param name="clrVersion">CLRのバージョン</param>
+        /// <param name="assemblyStep">踏み台アセンブリへのパス</param>
         /// <param name="processId">プロセスID。</param>
-        /// <param name="dllName">サーバー側で動作させるDLL名称。</param>
-        /// <param name="assemblyStep">踏み台用アセンブリのパス。</param>
-        /// <param name="clrVersion">CLRのバージョン。</param>
         /// <param name="initializeThreadWindowHandle">初期化を実行させるスレッドに属するウィンドウのハンドル。</param>
+        /// <param name="start">開始処理</param>
         /// <returns>システムコントローラー。</returns>
-        static SystemController StartInApp(IntPtr processHandle, int processId, string dllName, string assemblyStep, 
-                                            string clrVersion, IntPtr initializeThreadWindowHandle)
-		{
+        static SystemController StartInApp(string clrVersion, string assemblyStep, int processId, IntPtr initializeThreadWindowHandle, ExecuteStart start)
+        {
             SystemStartResponseReciever reciever = new SystemStartResponseReciever();
             IntPtr recieveWindowHandle = reciever.Start(processId);
 
-			//ロードさせたDLLのメソッドを呼び出させる
-            Debug.Trace("Call InitializeFriendly.");
-            DllInjector.ExecuteRemoteFunction(processHandle, dllName, "InitializeFriendly", 
-                CreateStartupInfo(clrVersion, assemblyStep, recieveWindowHandle, initializeThreadWindowHandle));
-            Debug.Trace("InitializeFriendly Finished.");
+            //開始
+            start(CreateStartupInfo(clrVersion, assemblyStep, recieveWindowHandle, initializeThreadWindowHandle));
 
             //受信スレッドの終了待ち（返信待ち）
             long errNo = 0;
@@ -117,6 +130,28 @@ namespace Codeer.Friendly.Windows.Inside
             //システムコントロールウィンドウのハンドルを返す
             Debug.Trace("InitializeFriendly Success.");
             return new SystemController(systemControlWindowInAppHandle);
+        }
+
+        /// <summary>
+        /// プロセスでシステムを起動させる。
+        /// </summary>
+        /// <param name="processHandle">対象プロセス操作ハンドル。</param>
+        /// <param name="processId">プロセスID。</param>
+        /// <param name="dllName">サーバー側で動作させるDLL名称。</param>
+        /// <param name="assemblyStep">踏み台用アセンブリのパス。</param>
+        /// <param name="clrVersion">CLRのバージョン。</param>
+        /// <param name="initializeThreadWindowHandle">初期化を実行させるスレッドに属するウィンドウのハンドル。</param>
+        /// <returns>システムコントローラー。</returns>
+        static SystemController StartInApp(IntPtr processHandle, int processId, string dllName, string assemblyStep, 
+                                            string clrVersion, IntPtr initializeThreadWindowHandle)
+		{
+            return StartInApp(clrVersion, assemblyStep, processId, initializeThreadWindowHandle,
+                e => 
+                {
+                    Debug.Trace("Call InitializeFriendly.");
+                    DllInjector.ExecuteRemoteFunction(processHandle, dllName, "InitializeFriendly", e);
+                    Debug.Trace("InitializeFriendly Finished.");
+                });
 		}
 
         /// <summary>
@@ -168,5 +203,5 @@ namespace Codeer.Friendly.Windows.Inside
             return initializeThreadWindowHandle + "\t" + recieveWindowHandle + "\t" +
                 clrVersion + "\t" + szAssemblyStep + "\t" + szTypeFullName + "\t" + szMethod + "\t" + szArgs;
         }
-	}
+    }
 }

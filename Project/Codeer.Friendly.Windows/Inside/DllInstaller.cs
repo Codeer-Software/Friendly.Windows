@@ -11,16 +11,43 @@ namespace Codeer.Friendly.Windows.Inside
     static class DllInstaller
     {
         /// <summary>
+        /// CodeerFriendlyWindows_cpu.dllのフルパス。
+        /// </summary>
+        internal static string CodeerFriendlyWindowsNativeDllPath
+        {
+            get
+            {
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                            "Codeer.Friendly");
+                string cpu = (IntPtr.Size == 4) ? "x86" : "x64";
+                string dllName = "CodeerFriendlyWindows_" + cpu + "_1030.dll";
+                string dllPath = Path.Combine(dir, dllName);
+                return dllPath;
+            }
+        }
+
+        /// <summary>
+        /// 踏み台用DLLのフルパス。
+        /// </summary>
+        static string CodeerFriendlyWindowsStepDllPth
+        {
+            get
+            {
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                            "Codeer.Friendly");
+                string dllName = "Codeer.Friendly.Windows.Step" + "_1020" + ".dll";
+                string dllPath = Path.Combine(dir, dllName);
+                return dllPath;
+            }
+        }
+
+        /// <summary>
         /// ネイティブのCodeerFriendlyWindows_cpu.dllの初期化。
         /// </summary>
         /// <returns>CodeerFriendlyWindows_cpu.dllのフルパス。</returns>
         internal static string InitializeCodeerFriendlyWindowsNative()
         {
-            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                        "Codeer.Friendly");
-            string cpu = (IntPtr.Size == 4) ? "x86" : "x64";
-            string dllName = "CodeerFriendlyWindows_" + cpu + "_1012.dll";
-            string dllPath = Path.Combine(dir, dllName);
+            string dllPath = CodeerFriendlyWindowsNativeDllPath;
             byte[] dllData = (IntPtr.Size == 4) ? Resources.CodeerFriendlyWindows_x86 : Resources.CodeerFriendlyWindows_x64;
             InstallDll(dllPath, dllData);
             return dllPath;
@@ -32,10 +59,7 @@ namespace Codeer.Friendly.Windows.Inside
         /// <returns>踏み台用DLLのフルパス。</returns>
         internal static string InitializeCodeerFriendlyWindowsStep()
         {
-            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                        "Codeer.Friendly");
-            string dllName = "Codeer.Friendly.Windows.Step" + "_1005" + ".dll";
-            string dllPath = Path.Combine(dir, dllName);
+            string dllPath = CodeerFriendlyWindowsStepDllPth;
             byte[] dllData = Resources.Codeer_Friendly_Windows_Step;
             InstallDll(dllPath, dllData);
             return dllPath;

@@ -220,6 +220,18 @@ namespace Codeer.Friendly.Windows
             ResourcesLocal.Install(this);
         }
 
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        /// <param name="controller">システムコントローラ</param>
+        /// <param name="executeContextWindowHandle">処理実行するスレッドに属するウィンドウハンドル</param>
+        WindowsAppFriend(SystemController controller, IntPtr executeContextWindowHandle)
+        {
+            _systemController = controller;
+            _currentConnector = _systemController.StartFriendlyConnector(executeContextWindowHandle);
+            ResourcesLocal.Install(this);
+        }
+
 		/// <summary>
 		/// ファイナライザ。
 		/// </summary>
@@ -227,6 +239,36 @@ namespace Codeer.Friendly.Windows
 		{
 			Dispose(false);
 		}
+#if ENG      
+        /// <summary>
+        /// Attach to other AppDomain.
+        /// </summary>
+        /// <returns>WindowsAppFriend for manipulation.</returns>
+#else
+        /// <summary>
+        /// 現在操作しているAppDomain以外にアタッチ
+        /// </summary>
+        /// <returns>操作するためのWindowsAppFriend</returns>
+#endif
+        public WindowsAppFriend[] AttachOtherDomains()
+        {
+            var ctrl = Dim(new NewInfo("Codeer.Friendly.Windows.Step.AppDomainControl", DllInstaller.CodeerFriendlyWindowsNativeDllPath));
+            var ids = (int[])ctrl["EnumDomains"]().Core;
+            var ws = new List<WindowsAppFriend>();
+            for (int i = 0; i < ids.Length; i++)
+            {
+                int id = ids[i];
+                if (id == (int)this[typeof(AppDomain), "CurrentDomain"]()["Id"]().Core)
+                {
+                    continue;
+                }
+                var executeContextWindowHandle = _currentConnector.FriendlyConnectorWindowInAppHandle;
+                SystemController system = SystemStarter.StartInOtherAppDomain(ProcessId, executeContextWindowHandle,
+                    e => ctrl["InitializeAppDomain"](id, e));
+                ws.Add(new WindowsAppFriend(system, executeContextWindowHandle));
+            }
+            return ws.ToArray();
+        }
 
 #if ENG
         /// <summary>
