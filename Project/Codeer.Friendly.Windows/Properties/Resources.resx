@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CodeerFriendlyWindows_x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CodeerFriendlyWindows_x64.dll;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -253,8 +253,10 @@ The specified type's full name is incorrect or the module containing the type ha
   <data name="ErrorInvalidThreadCall" xml:space="preserve">
     <value>There was a call from an unexpected thread.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Codeer_Friendly_Windows_Step" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Codeer.Friendly.Windows.Step.dll;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ErrorAttachOtherDomainsNeedNet4" xml:space="preserve">
+    <value>If you use AttachOtherDomains, .netframework4.0 must be installed.</value>
   </data>
 </root>

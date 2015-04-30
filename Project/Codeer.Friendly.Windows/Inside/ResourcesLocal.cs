@@ -36,6 +36,7 @@ namespace Codeer.Friendly.Windows.Inside
         internal string OutOfCommunicationNo;
         internal string OutOfMemory;
         internal string UnknownTypeInfoFormat;
+        internal string ErrorAttachOtherDomainsNeedNet4;
 
         /// <summary>
         /// 特別。
@@ -92,6 +93,7 @@ namespace Codeer.Friendly.Windows.Inside
             OutOfCommunicationNo = Resources.OutOfCommunicationNo;
             OutOfMemory = Resources.OutOfMemory;
             UnknownTypeInfoFormat = Resources.UnknownTypeInfoFormat;
+            ErrorAttachOtherDomainsNeedNet4 = Resources.ErrorAttachOtherDomainsNeedNet4;
         }
     }
 }

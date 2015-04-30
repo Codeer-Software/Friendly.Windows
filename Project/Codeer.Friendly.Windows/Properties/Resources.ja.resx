@@ -259,4 +259,7 @@ CLRのバージョンを指定しないコンストラクタを使ってくだ�
   <data name="ErrorInvalidThreadCall" xml:space="preserve">
     <value>予期せぬスレッドからの呼び出しがありました。</value>
   </data>
+  <data name="ErrorAttachOtherDomainsNeedNet4" xml:space="preserve">
+    <value>AttachOtherDomainsを使う場合、マシンに.netframework4.0がインストールされている必要があります。</value>
+  </data>
 </root>

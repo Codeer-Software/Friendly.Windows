@@ -85,9 +85,30 @@ namespace {
 			return !FAILED(hr);
 		}
 
-
 		BOOL Init(PCWSTR szVersion, int& errNo) {
-			HRESULT hr = CLRCreateInstance(CLSID_CLRMetaHost, IID_PPV_ARGS(&pMetaHost));
+			//CLRCreateInstanceは4.0がインストールされていなければ存在しない
+			auto hMod = LoadLibrary(L"MSCorEE.dll");
+			auto clrCreateInstance = (CLRCreateInstanceFnPtr)GetProcAddress(hMod, "CLRCreateInstance");
+			if (!clrCreateInstance) {
+				//旧式のランタイム取得方式
+				std::vector<std::wstring> elems;
+				SplitArguments(szVersion, '@', elems);
+				if (elems.size() == 2) {
+					szVersion = L"v2.0.50727";
+				}
+				typedef HRESULT(__stdcall *CorBindToRuntimeExType)(LPCWSTR pwszVersion, LPCWSTR pwszBuildFlavor, DWORD startupFlags, REFCLSID rclsid, REFIID riid, LPVOID FAR *ppv);
+				auto corBindToRuntimeEx = (CorBindToRuntimeExType)GetProcAddress(hMod, "CorBindToRuntimeEx");
+				if (!corBindToRuntimeEx) {
+					return FALSE;
+				}
+				HRESULT hr = corBindToRuntimeEx(szVersion, nullptr, 0, CLSID_CLRRuntimeHost, IID_PPV_ARGS(&pClrRuntimeHost));
+				if (FAILED(hr)) {
+					return FALSE;
+				}
+				return TRUE;
+			}
+
+			HRESULT hr = clrCreateInstance(CLSID_CLRMetaHost, IID_PPV_ARGS(&pMetaHost));
 			if (FAILED(hr)) {
 				return FALSE;
 			}
@@ -253,7 +274,7 @@ namespace {
 	{
 		CLRInterfaces interfaces;
 		int errNo = 0;
-		if (!interfaces.Init(szVersion, errNo)) {
+		if (!interfaces.Init(szVersion, errNo) || !interfaces.pRuntimeInfo) {
 			return FALSE;
 		}
 

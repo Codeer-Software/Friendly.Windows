@@ -254,6 +254,9 @@ namespace Codeer.Friendly.Windows
         {
             var ctrl = Dim(new NewInfo("Codeer.Friendly.Windows.Step.AppDomainControl", DllInstaller.CodeerFriendlyWindowsNativeDllPath));
             var ids = (int[])ctrl["EnumDomains"]().Core;
+            if (ids == null) {
+                throw new NotSupportedException(ResourcesLocal.Instance.ErrorAttachOtherDomainsNeedNet4);
+            }
             var ws = new List<WindowsAppFriend>();
             for (int i = 0; i < ids.Length; i++)
             {
