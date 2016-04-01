@@ -18,6 +18,9 @@ It can inject .net assembly. And can execute inserted methods.
 Install Friendly.Windows from NuGet
 
     PM> Install-Package Codeer.Friendly.Windows
+## Movies
+https://youtu.be/CK327YuI-bk?t=17<br>
+https://youtu.be/xy7BvrrF8oE
 
 ## Simple sample
 Here is some sample code to show how you can get started with Friendly
@@ -337,6 +340,6 @@ internal struct RECT
 ```
 ##Upper Librarys
 ![Upper Librarys](https://e1e82e8d-a-0cb309f2-s-sites.googlegroups.com/a/codeer.co.jp/english-home/test-automation/friendly-fundamental/All_libs.png?attachauth=ANoY7cp7pCVvvAD5KHiXYsseaYDG6-kja9x2OnjEvYHzL8odv57zkdeqjXDTYECh4G4aAkacOC3RuYEsXXKSBnwIRvHCSZPUVybpGU1VRwgXi7pGXSKsMYKcpNu8p0pviG8eIk6ig4Ed0c-z9nkiBWYmZJHljrMy9wafiNYugrHXfXZfhYhhgsC26qb_7Z0ADryOdODYFkRjkyORt3Z5EkzocluiBnUAWYt-DgnhZKwEwLe806U9njSRJwaLdvXLpM-4inhBlXYG&attredirects=0)
-#We win 2nd place at MVP Showcase. Thank you!<br>
+#We win 2nd place at MVP Showcase. Thank you!
 http://blogs.msdn.com/b/mvpawardprogram/archive/2014/11/04/mvp-showcase-winners.aspx
 
