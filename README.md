@@ -20,7 +20,6 @@ Install Friendly.Windows from NuGet
     PM> Install-Package Codeer.Friendly.Windows
 ## Movies
 https://youtu.be/CK327YuI-bk?t=17<br>
-https://youtu.be/xy7BvrrF8oE
 
 ## Simple sample
 The following samples are [ from / here ](https://github.com/Codeer-Software/Sample_Friendly_Basic2) downloadable. <br>
