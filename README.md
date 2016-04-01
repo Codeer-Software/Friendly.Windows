@@ -23,6 +23,7 @@ https://youtu.be/CK327YuI-bk?t=17<br>
 https://youtu.be/xy7BvrrF8oE
 
 ## Simple sample
+The following samples are [ from / here ](https://github.com/Codeer-Software/Sample_Friendly_Basic2) downloadable. <br>
 Here is some sample code to show how you can get started with Friendly.
 This is a perfect ordinary Windows Application that is manipulation target.
 (There is no kind of trick.)
