@@ -2,7 +2,7 @@ Friendly.Windows
 ======================
 Friendly is a library for creating integration tests.
 (The included tools can be useful, but these are only a bonus.)
-It is currently designed for Windows Applications (WinForms, WPF, and Win32).
+It is currently designed for Windows Applications (**WinForms**, **WPF**, and **Win32**).
 It can be used to start up a product process and run tests on it..
 However, the way of operating the target program is different from conventional automated GUI tests (capture replay tool, etc.).
 
@@ -301,66 +301,67 @@ Assert.AreEqual("1", (string)value);
 ####Dll injection.
 ```cs  
 [TestMethod]
-public void Test()
+public void DllInjection()
 {
-    dynamic mainWindow = app.Type<Application>().Current.Windows[0];
-    dynamic button = mainWindow.button;
+    dynamic window = _app.Type<Application>().Current.MainWindow;
+    dynamic textBox = window._textBox;
 
     //The code let tasrget process load current assembly.
-    WindowsAppExpander.LoadAssembly(app, GetType().Assembly);
+    WindowsAppExpander.LoadAssembly(_app, GetType().Assembly);
 
     //You can use class defined in current assembly.
-    dynamic observer = app.Type<Observer>()(button);
+    dynamic observer = _app.Type<Observer>()(textBox);
 
-    //Check click.
-    button.OnClick();
-    Assert.IsTrue((bool)observer.Clicked);
+    //Check change text.
+    textBox.Text = "abc";
+    Assert.IsTrue((bool)observer.TextChanged);
 }
 
 class Observer
 {
-    internal bool Clicked { get; set; }
-    internal Observer(Button button)
+    internal bool TextChanged { get; set; }
+    internal Observer(TextBox textBox)
     {
-        button.Click += delegate { Clicked = true; };
+        textBox.TextChanged += delegate { TextChanged = true; };
     }
 }
+```
 
 Native dll methods.
+```cs  
 [TestMethod]
-public void TestRect()
+public void DllInjectionPInvoke()
 {
-    WindowsAppExpander.LoadAssembly(_app, GetType().Assembly); 
+    WindowsAppExpander.LoadAssembly(_app, GetType().Assembly);
 
     Process process = Process.GetProcessById(_app.ProcessId);
-    _app.Type<BasicSample>().MoveWindow(process.MainWindowHandle, 0, 0, 200, 200, true);
+    _app.Type(GetType()).MoveWindow(process.MainWindowHandle, 0, 0, 200, 200, true);
 
     dynamic rectInTarget = _app.Type<RECT>()();
-    _app.Type<BasicSample>().GetWindowRect(process.MainWindowHandle, rectInTarget); 
-    RECT rect = (RECT)rectInTarget; 
+    _app.Type(GetType()).GetWindowRect(process.MainWindowHandle, rectInTarget);
+    RECT rect = (RECT)rectInTarget;
 
-    Assert.AreEqual(0, rect.left); 
-    Assert.AreEqual(0, rect.top); 
-    Assert.AreEqual(200, rect.right); 
-    Assert.AreEqual(200, rect.bottom); 
+    Assert.AreEqual(0, rect.left);
+    Assert.AreEqual(0, rect.top);
+    Assert.AreEqual(200, rect.right);
+    Assert.AreEqual(200, rect.bottom);
 }
 
 [DllImport("User32.dll")]
-static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw); 
-
+static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
 
 [DllImport("user32.dll")]
-[return: MarshalAs(UnmanagedType.Bool)] 
-static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect); 
+[return: MarshalAs(UnmanagedType.Bool)]
+static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
 internal struct RECT
 {
-    public int left; 
-    public int top; 
-    public int right; 
-    public int bottom; 
+    public int left;
+    public int top;
+    public int right;
+    public int bottom;
 }
 ```
 ##Upper Librarys
