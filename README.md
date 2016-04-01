@@ -23,41 +23,69 @@ https://youtu.be/CK327YuI-bk?t=17<br>
 https://youtu.be/xy7BvrrF8oE
 
 ## Simple sample
-Here is some sample code to show how you can get started with Friendly
-
+Here is some sample code to show how you can get started with Friendly.
 This is a perfect ordinary Windows Application that is manipulation target.
 (There is no kind of trick.)
+```xaml
+<Window x:Class="Target.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <TextBox x:Name="_textBox" Text="{Binding Path=TextData}"/>
+    </Grid>
+</Window>
+```
 ```cs  
-using System.Windows.Forms;
+using System.ComponentModel;
+using System.Windows;
 
-namespace ProductProcess
+namespace Target
 {
-    public partial class SampleForm : Form
+    public partial class MainWindow : Window
     {
-        int testValue;
-
-        private void SetTestValue(int value)
+        public MainWindow()
         {
-            Text = value.ToString();
-            testValue = value;
+            InitializeComponent();
+            this.DataContext = new VM();
+        }
+
+        string MyFunc(int value)
+        {
+            return value.ToString();
+        }
+    }
+
+    class VM : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged = (_, __) => { };
+
+        string _textData;
+        public string TextData
+        {
+            get { return _textData; }
+            set
+            {
+                _textData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(TextData)));
+            }
         }
     }
 }
 ```
 This is a test application (using VSTest):
 ```cs  
-using System;
-using System.Diagnostics;
-using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Codeer.Friendly;
 using Codeer.Friendly.Dynamic;
 using Codeer.Friendly.Windows;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
 
-namespace TestProcess
+namespace Sample
 {
     [TestClass]
-    public class BasicSample
+    public class Test
     {
         WindowsAppFriend _app;
 
@@ -65,34 +93,34 @@ namespace TestProcess
         public void TestInitialize()
         {
             //attach to target process!
-             _app = new WindowsAppFriend(Process.Start("ProductProcess.exe"));
+            var path = Path.GetFullPath("../../../Target/bin/Debug/Target.exe");
+            _app = new WindowsAppFriend(Process.Start(path));
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-             Process process = Process.GetProcessById(_app.ProcessId);
+            Process process = Process.GetProcessById(_app.ProcessId);
             _app.Dispose();
-             process.CloseMainWindow();
+            process.CloseMainWindow();
         }
 
         [TestMethod]
-        public void TestSetValue()
-        {
+        public void Manipulate()
+        {           
             //static method
-            dynamic sampleForm = _app.Type<Application>().OpenForms[0];
+            dynamic window = _app.Type<Application>().Current.MainWindow;
 
             //instance method
-            sampleForm.SetTestValue(5);
-
-            //instance field
-            int value = sampleForm.testValue;
+            string value = window.MyFunc(5);
+            Assert.AreEqual("5", value);
 
             //instance property
-            string text = sampleForm.Text;
+            window.DataContext.TextData = "abc";
 
-            Assert.AreEqual(5, value);
-            Assert.AreEqual("5", text);
+            //instance field.
+            string text = window._textBox.Text;
+            Assert.AreEqual("abc", text);
         }
     }
 }
@@ -121,41 +149,41 @@ Operation can also be executed on a specified window thread:
 ```cs  
 public WindowsAppFriend(IntPtr windowHandle);
 ```
-#### Invoking Static Operations（Any OK）
+#### Invoking Static Operations(Any OK)
 ```cs  
-dynamic sampleForm1 = _app.Type<Application>().OpenForms[0];
+dynamic sampleForm1 = _app.Type<Application>().Current.MainWindow;
 
-dynamic sampleForm2 = _app.Type(typeof(Application)).OpenForms[0];
+dynamic sampleForm2 = _app.Type(typeof(Application)).Current.MainWindow;
 
-dynamic sampleForm3 = _app.Type().System.Windows.Forms.Application.OpenForms[0];
+dynamic sampleForm3 = _app.Type().System.Windows.Forms.Application.Current.MainWindow;
 
-dynamic sampleForm4 = _app.Type("System.Windows.Forms.Application").OpenForms[0];
+dynamic sampleForm4 = _app.Type("System.Windows.Forms.Application").Current.MainWindow;
 
 dynamic sampleForm5 = _app.Type<Control>().FromHandle(handle);
 ```
 #### Invokeing Instance Operations
 ```cs  
 //method
-sampleForm.SetTestValue(5);
-
-//field
-int value = sampleForm.testValue;
+string value = window.MyFunc(5);
 
 //property
-string text = sampleForm.Text;
+window.DataContext.TextData = "abc";
+
+//field.
+string text = window._textBox.Text;
 ```
 Variables are referenced from the target process.
 You can access public and private members.
 
-#### Instantiating New Objects
+#### Instantiating New Objects(Any OK)
 ```cs  
 dynamic listBox1 = _app.Type<ListBox>()();
 
 dynamic listBox2 = _app.Type(typeof(ListBox))();
 
-dynamic listBox3 = _app.Type().System.Windows.Forms.ListBox();
+dynamic listBox3 = _app.Type().System.Windows.Controls.ListBox();
 
-dynamic listBox4 = _app.Type("System.Windows.Forms.ListBox")();
+dynamic listBox4 = _app.Type(" System.Windows.Controls.ListBox")();
 
 dynamic list = _app.Type<List<int>>()(new int[]{1, 2, 3, 4, 5});
 ```
@@ -167,26 +195,24 @@ If you use serializable objects, they will be serialized and a copy will be sent
 // get SampleForm reference from the target process.
 dynamic sampleForm = _app.Type<Application>().OpenForms[0];
 ```cs  
- // new instance in target process.
-dynamic listBox = _app.Type<ListBox>()();
-
 // serializable object
-listBox.Location = new Point(10, 10); 
+window.MyFunc(5);
+window.DataContext.TextData = "abc";
 
-// serializable object
-listBox.Items.Add("Item"); 
+// new instance in target process.
+dynamic textBox = _app.Type<TextBox>()();
 
 // reference to target process
-sampleForm.Controls.Add(listBox); 
+window.Content.Children.Add(textBox);
 ```
 
-####Return Values
+####Rules for Return Values
 ```cs  
 // referenced object exists in target process' memory. 
-dynamic reference = sampleForm.Text;
+dynamic reference = window._textBox.Text;
 
 // when you perform a cast, it will be marshaled from the target process.
-string text = (string)reference;
+string text = reference;
 ```
 
 ####Note the Casting Behavior
@@ -213,17 +239,16 @@ string.IsNullOrEmpty((string)reference);
 ####Special Casts
 IEnumerable
 ```cs  
-foreach (dynamic form in _app.Type<Application>().OpenForms)
+foreach (var w in _app.Type<Application>().Current.Windows)
 {
-    form.BackColor = Color.Pink;
 }
 ```
 AppVar
 ```cs  
-dynamic sampleForm = _app.Type("System.Windows.Forms.Control").FromHandle(_process.MainWindowHandle);
+dynamic window = _app.Type<Application>().Current.MainWindow;
 
-AppVar appVar = sampleForm;
-appVar["Text"]("abc");
+AppVar appVar = window;
+appVar["Title"]("abc");
 ```
 AppVar is part of the old style interface.
 You will need to use AppVar if you use the old interface or if you can't use the .NET framework 4.0.
@@ -235,8 +260,8 @@ Friendly operations are executed synchronously.
 But you can use the Async class to execute them asynchronously.
 ```cs  
 // Async can be specified anywhere among the arguments.
-Async async = new Async();
-sampleForm.SetTestValue(async, 5);
+var async = new Async();
+window.MyFunc(async, 5);
 
 // You can check whether it has completed.
 if (async.IsCompleted)
@@ -251,10 +276,10 @@ async.WaitForCompletion();
 Return Values
 ```cs  
 // Invoke getter.
-Async async = new Async();
+var async = new Async();
 
 // Text will obtain its value when the operation completes.
-dynamic text = sampleForm.Text(async);
+var text = window.MyFunc(async, 5);
 
 // When the operation finishes, the value will be available.
 async.WaitForCompletion();
