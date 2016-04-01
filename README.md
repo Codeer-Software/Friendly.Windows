@@ -9,7 +9,6 @@ However, the way of operating the target program is different from conventional 
 ## Features ...
 ####Invoke separate process's API.
 It can invoke all methods, properties, and fields.
-And it executes on a separate process.
 It's like a selenium's javascript execution.
 ####DLL injection.
 It can inject .net assembly. And can execute inserted methods.
