@@ -7,7 +7,7 @@ It can be used to start up a product process and run tests on it..
 However, the way of operating the target program is different from conventional automated GUI tests (capture replay tool, etc.).
 
 ## Features ...
-####Invoke other process's API.
+####Invoke separate process's API.
 It can invoke all methods, properties, and fields.
 And it executes on a separate process.
 It's like a selenium's javascript execution.
