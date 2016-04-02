@@ -17,6 +17,7 @@ It can inject .net assembly. And can execute inserted methods.
 Install Friendly.Windows from NuGet
 
     PM> Install-Package Codeer.Friendly.Windows
+https://www.nuget.org/packages/Codeer.Friendly.Windows/
 ## Movies
 https://youtu.be/CK327YuI-bk?t<br>
 
