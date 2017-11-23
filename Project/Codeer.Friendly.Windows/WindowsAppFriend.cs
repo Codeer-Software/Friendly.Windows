@@ -7,6 +7,7 @@ using Codeer.Friendly.Windows.Inside;
 using Codeer.Friendly.Inside.Protocol;
 using Codeer.Friendly.Windows.Inside.CopyDataProtocol;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Codeer.Friendly.Windows
 {
@@ -345,6 +346,24 @@ namespace Codeer.Friendly.Windows
                 return old;
             }
         }
+
+#if ENG
+        /// <summary>
+        /// Causes the target application to load an assembly from an indicated path.
+        /// If can't load assembly by Assembly.Load, load by Assembly.LoadFile.
+        /// </summary>
+        /// <param name="assembly">Assembly.</param>
+#else
+        /// <summary>
+        /// テスト対象アプリケーションにアセンブリをロードさせます。
+        /// Assembly.Loadで読み込める場合は、それを優先します。
+        /// 読み込めなければAssembly.LoadFileを実行します。
+        /// </summary>
+        /// <param name="assembly">アセンブリ。</param>
+#endif
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        public void LoadAssembly(Assembly assembly)
+            => WindowsAppExpander.LoadAssembly(this, assembly);
 
         /// <summary>
         /// 送受信
