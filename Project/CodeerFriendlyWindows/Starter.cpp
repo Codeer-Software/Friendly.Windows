@@ -89,6 +89,15 @@ namespace {
 			//CLRCreateInstanceは4.0がインストールされていなければ存在しない
 			auto hMod = LoadLibrary(L"MSCorEE.dll");
 			auto clrCreateInstance = (CLRCreateInstanceFnPtr)GetProcAddress(hMod, "CLRCreateInstance");
+
+			HRESULT hr;
+			if (clrCreateInstance) {
+				hr = clrCreateInstance(CLSID_CLRMetaHost, IID_PPV_ARGS(&pMetaHost));
+				if (FAILED(hr)) {
+					clrCreateInstance = nullptr;
+				}
+			}
+
 			if (!clrCreateInstance) {
 				//旧式のランタイム取得方式
 				std::vector<std::wstring> elems;
@@ -101,16 +110,15 @@ namespace {
 				if (!corBindToRuntimeEx) {
 					return FALSE;
 				}
-				HRESULT hr = corBindToRuntimeEx(szVersion, nullptr, 0, CLSID_CLRRuntimeHost, IID_PPV_ARGS(&pClrRuntimeHost));
+				hr = corBindToRuntimeEx(szVersion, nullptr, 0, CLSID_CLRRuntimeHost, IID_PPV_ARGS(&pClrRuntimeHost));
+				if (FAILED(hr)) {
+					return FALSE;
+				}
+				hr = pClrRuntimeHost->Start();
 				if (FAILED(hr)) {
 					return FALSE;
 				}
 				return TRUE;
-			}
-
-			HRESULT hr = clrCreateInstance(CLSID_CLRMetaHost, IID_PPV_ARGS(&pMetaHost));
-			if (FAILED(hr)) {
-				return FALSE;
 			}
 
 			HANDLE hProc = NULL;
