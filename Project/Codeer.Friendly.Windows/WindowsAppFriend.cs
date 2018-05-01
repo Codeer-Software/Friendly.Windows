@@ -25,9 +25,9 @@ namespace Codeer.Friendly.Windows
 #endif
     public class WindowsAppFriend : AppFriend, IDisposable
 	{
+        ExecuteContext _context;
         readonly int _processId;
         SystemController _systemController;
-        FriendlyConnectorCore _currentConnector;
         int _appVarCreateCount;
         readonly object _syncAppVarCreateCountUp = new object();
         readonly object _syncCurrentConnector = new object();
@@ -169,8 +169,8 @@ namespace Codeer.Friendly.Windows
 			//サーバーを開始させる。
             _systemController = SystemStarter.Start(process, clrVersion, process.MainWindowHandle);
 
-			//メインの実行ウィンドウハンドル生成。
-            _currentConnector = _systemController.StartFriendlyConnector(process.MainWindowHandle);
+            //メインの実行ウィンドウハンドル生成。
+            _context = new ExecuteContext(_systemController.StartFriendlyConnector(process.MainWindowHandle));
 
             //リソース初期化
             ResourcesLocal.Install(this);
@@ -215,7 +215,7 @@ namespace Codeer.Friendly.Windows
             _systemController = SystemStarter.Start(Process.GetProcessById(_processId), clrVersion, executeContextWindowHandle);
 
             //メインの実行ウィンドウハンドル生成。
-            _currentConnector = _systemController.StartFriendlyConnector(executeContextWindowHandle);
+            _context = new ExecuteContext(_systemController.StartFriendlyConnector(executeContextWindowHandle));
 
             //リソース初期化
             ResourcesLocal.Install(this);
@@ -229,7 +229,7 @@ namespace Codeer.Friendly.Windows
         WindowsAppFriend(SystemController controller, IntPtr executeContextWindowHandle)
         {
             _systemController = controller;
-            _currentConnector = _systemController.StartFriendlyConnector(executeContextWindowHandle);
+            _context = new ExecuteContext(_systemController.StartFriendlyConnector(executeContextWindowHandle));
             ResourcesLocal.Install(this);
         }
 
@@ -266,7 +266,7 @@ namespace Codeer.Friendly.Windows
                 {
                     continue;
                 }
-                var executeContextWindowHandle = _currentConnector.FriendlyConnectorWindowInAppHandle;
+                var executeContextWindowHandle = _context.FriendlyConnector.FriendlyConnectorWindowInAppHandle;
                 SystemController system = SystemStarter.StartInOtherAppDomain(ProcessId, executeContextWindowHandle,
                     e => ctrl["InitializeAppDomain"](id, e));
                 ws.Add(new WindowsAppFriend(system, executeContextWindowHandle));
@@ -315,7 +315,8 @@ namespace Codeer.Friendly.Windows
 			}
             lock (_syncCurrentConnector)
             {
-                _currentConnector = null;
+                _context.Dispose();
+                _context = null;
             }
             GC.Collect();
         }
@@ -341,8 +342,8 @@ namespace Codeer.Friendly.Windows
             }
             lock (_syncCurrentConnector)
             {
-                ExecuteContext old = new ExecuteContext(_currentConnector);
-                _currentConnector = context.FriendlyConnector;
+                var old = _context;
+                _context = context;
                 return old;
             }
         }
@@ -375,11 +376,11 @@ namespace Codeer.Friendly.Windows
             FriendlyConnectorCore connector = null;
             lock (_syncCurrentConnector)
             {
-                if (_currentConnector == null)
+                if (_context == null)
                 {
                     return new ReturnInfo();
                 }
-                connector = _currentConnector;
+                connector = _context.FriendlyConnector;
             }
             return connector.SendAndReceive(info, null);
         }
