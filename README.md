@@ -7,10 +7,10 @@ It can be used to start up a product process and run tests on it..
 However, the way of operating the target program is different from conventional automated GUI tests (capture replay tool, etc.).
 
 ## Features ...
-####Invoke separate process's API.
+#### Invoke separate process's API.
 It can invoke all methods, properties, and fields.
 It's like a selenium's javascript execution.
-####DLL injection.
+#### DLL injection.
 It can inject .net assembly. And can execute inserted methods.
 
 ## Getting Started
@@ -19,7 +19,7 @@ Install Friendly.Windows from NuGet
     PM> Install-Package Codeer.Friendly.Windows
 https://www.nuget.org/packages/Codeer.Friendly.Windows/
 ## Movies
-https://youtu.be/CK327YuI-bk?t<br>
+https://www.youtube.com/watch?v=xy7BvrrF8oE<br>
 
 ## Simple sample
 The following samples are [ from / here ](https://github.com/Codeer-Software/Sample_Friendly_Basic2) downloadable. <br>
@@ -206,7 +206,7 @@ dynamic textBox = _app.Type<TextBox>()();
 window.Content.Children.Add(textBox);
 ```
 
-####Rules for Return Values
+#### Rules for Return Values
 ```cs  
 // referenced object exists in target process' memory. 
 dynamic reference = window._textBox.Text;
@@ -215,7 +215,7 @@ dynamic reference = window._textBox.Text;
 string text = reference;
 ```
 
-####Note the Casting Behavior
+#### Note the Casting Behavior
 ```cs  
 // OK
 string cast = (string)reference;
@@ -236,7 +236,7 @@ string.IsNullOrEmpty(reference);
 string.IsNullOrEmpty((string)reference);
 ```
 
-####Special Casts
+#### Special Casts
 IEnumerable
 ```cs  
 foreach (var w in _app.Type<Application>().Current.Windows)
@@ -285,7 +285,7 @@ var text = window.MyFunc(async, 5);
 async.WaitForCompletion();
 string textValue = (string)text;
 ```
-####Copy() and Null()
+#### Copy() and Null()
 ```cs  
 Dictionary<int, string> dic = new Dictionary<int, string>();
 dic.Add(1, "1");
@@ -298,7 +298,7 @@ dynamic value = _app.Null();
 dicInTarget.TryGetValue(1, value);
 Assert.AreEqual("1", (string)value);
 ```
-####Dll injection.
+#### Dll injection.
 ```cs  
 [TestMethod]
 public void DllInjection()
@@ -364,8 +364,8 @@ internal struct RECT
     public int bottom;
 }
 ```
-##Upper Librarys
+## Upper Librarys
 ![Upper Librarys](https://github.com/Codeer-Software/Friendly.Windows/blob/master/libraries.png)
-#We win 2nd place at MVP Showcase. Thank you!
+# We win 2nd place at MVP Showcase. Thank you!
 http://blogs.msdn.com/b/mvpawardprogram/archive/2014/11/04/mvp-showcase-winners.aspx
 
