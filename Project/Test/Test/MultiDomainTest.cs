@@ -9,7 +9,7 @@ using System.Linq;
 namespace MultiDomainTest
 {
     [TestClass]
-    public class Test
+    public class MultiDomainTest
     {
         [TestMethod]
         public void Test_MultiDomain_2_32()
