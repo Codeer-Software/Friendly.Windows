@@ -294,15 +294,11 @@ namespace {
 			_AppDomainPtr pDomain;
 			Data() : pCorRuntimeHost(), hEnum(), pDomainSrc(), pDomain() {}
 			~Data() {
-				if (pDomainSrc) pDomainSrc->Release();
-				if (pDomain) pDomain->Release();
 				if (hEnum) pCorRuntimeHost->CloseEnum(hEnum);
 				if (pCorRuntimeHost) pCorRuntimeHost->Release();
 			}
 			void ReleaseDomain() {
-				if (pDomainSrc) pDomainSrc->Release();
 				pDomainSrc = nullptr;
-				if (pDomain) pDomain->Release();
 				pDomain = nullptr;
 			}
 		}data;
@@ -375,7 +371,7 @@ namespace {
 		if (!ExecuteInDefaultAppDomain(vec[2].c_str(), vec[3].c_str(), vec[4].c_str(), vec[5].c_str(), vec[6].c_str(), errNo)) {
 			//失敗通知
 			wchar_t* p = NULL;
-			HWND hReturn = (HWND)std::wcstoul(vec[1].c_str(), &p, 10);
+			HWND hReturn = (HWND)std::wcstoull(vec[1].c_str(), &p, 10);
 			::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, errNo);
 		}
 	}
@@ -429,7 +425,7 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 
 	//対象ウィンドウのスレッドに処理を実行させる
 	wchar_t* p = NULL;
-	HWND hTargetWindow = (HWND)std::wcstoul(vec[0].c_str(), &p, 10);
+	HWND hTargetWindow = (HWND)std::wcstoull(vec[0].c_str(), &p, 10);
 	s_pStartInfo = pStartInfo;
 	s_bExecutiong = TRUE;
 	s_srcProc = (WNDPROC)SetWindowLongPtrEx(hTargetWindow, GWLP_WNDPROC, (LONG_PTR)ExecuteConnectionProc);
@@ -440,7 +436,7 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 	SetWindowLongPtrEx(hTargetWindow, GWLP_WNDPROC, (LONG_PTR)s_srcProc);
 	if (s_bExecutiong) {
 		wchar_t* p = NULL;
-		HWND hReturn = (HWND)std::wcstoul(vec[1].c_str(), &p, 10);
+		HWND hReturn = (HWND)std::wcstoull(vec[1].c_str(), &p, 10);
 		::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, 0);
 	}
 	return 0;

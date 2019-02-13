@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Forms;
+using System.Windows;
 using Codeer.Friendly.Dynamic;
 using Codeer.Friendly.Windows;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

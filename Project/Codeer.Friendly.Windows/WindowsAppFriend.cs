@@ -313,10 +313,17 @@ namespace Codeer.Friendly.Windows
                 _systemController.EndSystem();
                 _systemController = null;
 			}
-            lock (_syncCurrentConnector)
+            if (_syncCurrentConnector != null)
             {
-                _context.Dispose();
-                _context = null;
+                lock (_syncCurrentConnector)
+                {
+                    if (_context != null)
+                    {
+                        _context.Dispose();
+                        _context = null;
+                    }
+                }
+
             }
             GC.Collect();
         }
