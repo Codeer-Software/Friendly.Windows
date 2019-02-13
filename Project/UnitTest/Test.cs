@@ -13,9 +13,6 @@ namespace UnitTest
         [TestMethod]
         public void Check()
         {
-            using (var app = new WindowsAppFriend(Process.GetProcessesByName("Hoge.R01.Start")[0]))
-            {
-            }
         }
     }
 }
