@@ -226,9 +226,11 @@ namespace Codeer.Friendly.Windows
         /// </summary>
         /// <param name="controller">システムコントローラ</param>
         /// <param name="executeContextWindowHandle">処理実行するスレッドに属するウィンドウハンドル</param>
-        WindowsAppFriend(SystemController controller, IntPtr executeContextWindowHandle)
+        /// <param name="processId">プロセスId</param>
+        WindowsAppFriend(SystemController controller, IntPtr executeContextWindowHandle, int processId)
         {
             _systemController = controller;
+            _processId = processId;
             _context = new ExecuteContext(_systemController.StartFriendlyConnector(executeContextWindowHandle));
             ResourcesLocal.Install(this);
         }
@@ -269,7 +271,7 @@ namespace Codeer.Friendly.Windows
                 var executeContextWindowHandle = _context.FriendlyConnector.FriendlyConnectorWindowInAppHandle;
                 SystemController system = SystemStarter.StartInOtherAppDomain(ProcessId, executeContextWindowHandle,
                     e => ctrl["InitializeAppDomain"](id, e));
-                ws.Add(new WindowsAppFriend(system, executeContextWindowHandle));
+                ws.Add(new WindowsAppFriend(system, executeContextWindowHandle, _processId));
             }
             return ws.ToArray();
         }
