@@ -106,7 +106,13 @@ namespace Codeer.Friendly.Windows.Inside
                 EventHandler appExit = new EventHandler(delegate { NativeMethods.PostMessage(controlWindowHandle, NativeMethods.WM_QUIT, IntPtr.Zero, IntPtr.Zero); });
                 Application.ApplicationExit += appExit;
                 Debug.Trace("Success in App.");
-                var windowProcess = Process.GetProcessById(windowProcessId);
+                Process windowProcess = null;
+                try
+                {
+                    windowProcess = Process.GetProcessById(windowProcessId);
+                }
+                catch {}
+
                 while (windowProcess != null)
                 {
                     //通信プロセスが消えたら終わり
