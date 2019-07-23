@@ -11,11 +11,11 @@ using System.Collections.Generic;
 
 namespace Codeer.Friendly.Windows.Inside
 {
-    /// <summary>
-    /// Windowsアプリケーション操作開始クラス。
-    /// </summary>
-    public static class SystemStarterInApp
-    {
+	/// <summary>
+	/// Windowsアプリケーション操作開始クラス。
+	/// </summary>
+	public static class SystemStarterInApp
+	{
         /// <summary>
         /// ウィンドウハンドル通知メッセージ。
         /// </summary>
@@ -46,20 +46,20 @@ namespace Codeer.Friendly.Windows.Inside
         /// <param name="terminalWindow">端末ウィンドウ。</param>
         public static void StartCore(IntPtr terminalWindow)
         {
-            //コントロールスレッド終了管理スレッド
+			//コントロールスレッド終了管理スレッド
             //システムに負荷をかけない程度で端末プロセス、コントローススレッド、メインスレッドを監視する
-            new Thread((ThreadStart)delegate
-            {
+			new Thread((ThreadStart)delegate
+			{
                 Debug.Trace("Start waiting thread.");
 
                 //コントロールウィンドウのハンドル格納用
                 object sync = new object();
                 IntPtr controlWindowHandle = IntPtr.Zero;
 
-                //コントロールスレッド起動
+				//コントロールスレッド起動
                 //処理に対して素早く対応するためGetMessageを使用する
-                Thread controlThread = new Thread((ThreadStart)delegate
-                {
+				Thread controlThread = new Thread((ThreadStart)delegate
+				{
                     using (SystemControlWindowInApp window = new SystemControlWindowInApp())
                     {
                         NativeMethods.MSG msg = new NativeMethods.MSG();
@@ -77,21 +77,21 @@ namespace Codeer.Friendly.Windows.Inside
                             NativeMethods.DispatchMessage(ref msg);
                         }
                     }
-                });
-                controlThread.Start();
+				});
+				controlThread.Start();
 
-                //ウィンドウハンドル生成待ち
-                while (true)
-                {
-                    lock (sync)
-                    {
-                        if (controlWindowHandle != IntPtr.Zero)
-                        {
-                            break;
-                        }
-                    }
+				//ウィンドウハンドル生成待ち
+				while (true)
+				{
+					lock (sync)
+					{
+						if (controlWindowHandle != IntPtr.Zero)
+						{
+							break;
+						}
+					}
                     Thread.Sleep(10);
-                }
+				}
 
                 Debug.Trace("Control Window Created.");
 
@@ -122,15 +122,15 @@ namespace Codeer.Friendly.Windows.Inside
                         break;
                     }
 
-                    Thread.Sleep(200);
-                }
+					Thread.Sleep(200);
+				}
 
-                //コントロールスレッド終了
-                while (controlThread.IsAlive)
-                {
-                    NativeMethods.PostMessage(controlWindowHandle, NativeMethods.WM_QUIT, IntPtr.Zero, IntPtr.Zero);
-                    Thread.Sleep(10);
-                }
+				//コントロールスレッド終了
+				while (controlThread.IsAlive)
+				{
+					NativeMethods.PostMessage(controlWindowHandle, NativeMethods.WM_QUIT, IntPtr.Zero, IntPtr.Zero);
+					Thread.Sleep(10);
+				}
 
                 Application.ApplicationExit -= appExit;
 
