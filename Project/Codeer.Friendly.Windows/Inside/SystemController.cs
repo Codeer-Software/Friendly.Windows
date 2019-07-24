@@ -2,16 +2,16 @@
 using System;
 using Codeer.Friendly.Windows.Inside.CopyDataProtocol;
 using System.Diagnostics.CodeAnalysis;
-using Codeer.Friendly.Inside.Protocol;
 
 namespace Codeer.Friendly.Windows.Inside
 {
     /// <summary>
     /// システム制御。
     /// </summary>
+    [Serializable]
     class SystemController
     {
-        readonly IntPtr _systemControlWindowInAppHandle;
+        internal IntPtr SystemControlWindowInAppHandle { get; }
         IntPtr _friendlyConnectorWindowInAppAsync;
 
         /// <summary>
@@ -20,11 +20,11 @@ namespace Codeer.Friendly.Windows.Inside
         /// <param name="systemControlWindowInAppHandle">システムコントロールウィンドウハンドル。</param>
         internal SystemController(IntPtr systemControlWindowInAppHandle)
         {
-            _systemControlWindowInAppHandle = systemControlWindowInAppHandle;
+            SystemControlWindowInAppHandle = systemControlWindowInAppHandle;
 
             //コントロールスレッドに非同期通信用を一つ確保する
-            _friendlyConnectorWindowInAppAsync = (IntPtr)CopyDataProtocolTalker.SendAndRecieve(_systemControlWindowInAppHandle,
-                new SystemControlInfo(SystemControlType.StartFriendlyConnectorWindowInApp, _systemControlWindowInAppHandle));
+            _friendlyConnectorWindowInAppAsync = (IntPtr)CopyDataProtocolTalker.SendAndRecieve(SystemControlWindowInAppHandle,
+                new SystemControlInfo(SystemControlType.StartFriendlyConnectorWindowInApp, SystemControlWindowInAppHandle));
             if (_friendlyConnectorWindowInAppAsync == IntPtr.Zero)
             {
                 throw new FriendlyOperationException(ResourcesLocal.Instance.ErrorExecuteThreadWindowHandle);
@@ -39,7 +39,7 @@ namespace Codeer.Friendly.Windows.Inside
         internal FriendlyConnectorCore StartFriendlyConnector(IntPtr executeThreadWindowHandle)
         {
             //通信用ウィンドウを生成
-            IntPtr friendlyConnectorWindowInApp = (IntPtr)CopyDataProtocolTalker.SendAndRecieve(_systemControlWindowInAppHandle,
+            IntPtr friendlyConnectorWindowInApp = (IntPtr)CopyDataProtocolTalker.SendAndRecieve(SystemControlWindowInAppHandle,
                     new SystemControlInfo(SystemControlType.StartFriendlyConnectorWindowInApp, executeThreadWindowHandle));
             if (friendlyConnectorWindowInApp == IntPtr.Zero)
             {
@@ -58,7 +58,7 @@ namespace Codeer.Friendly.Windows.Inside
             //タイミングによっては相手アプリケーションが存在しないことは十分にありうる
             try
             {
-                CopyDataProtocolTalker.SendAndRecieve(_systemControlWindowInAppHandle,
+                CopyDataProtocolTalker.SendAndRecieve(SystemControlWindowInAppHandle,
                     new SystemControlInfo(SystemControlType.EndFriendlyConnectorWindowInApp, friendlyConnectorWindowInApp));
             }
             catch { }
@@ -73,7 +73,7 @@ namespace Codeer.Friendly.Windows.Inside
             //フタイミングによっては相手アプリケーションが存在しないことは十分にありうる
             try
             {
-                CopyDataProtocolTalker.SendAndRecieve(_systemControlWindowInAppHandle,
+                CopyDataProtocolTalker.SendAndRecieve(SystemControlWindowInAppHandle,
                     new SystemControlInfo(SystemControlType.EndSystem, null));
             }
             catch { }

@@ -21,6 +21,8 @@ namespace Codeer.Friendly.Windows.Inside
         /// </summary>
         internal const int WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE = 0x8100;
 
+        static Dictionary<IntPtr, int> _manipulatorPocessChangeDictionary = new Dictionary<IntPtr, int>();
+
         /// <summary>
         /// 開始。
         /// </summary>
@@ -106,7 +108,7 @@ namespace Codeer.Friendly.Windows.Inside
                 EventHandler appExit = new EventHandler(delegate { NativeMethods.PostMessage(controlWindowHandle, NativeMethods.WM_QUIT, IntPtr.Zero, IntPtr.Zero); });
                 Application.ApplicationExit += appExit;
                 Debug.Trace("Success in App.");
-                using (Process windowProcess = GetProcessById(windowProcessId))
+                var windowProcess = GetProcessById(windowProcessId);
                 while (windowProcess != null)
                 {
                     //通信プロセスが消えたら終わり
@@ -122,11 +124,15 @@ namespace Codeer.Friendly.Windows.Inside
                         break;
                     }
 
-					Thread.Sleep(200);
-				}
+                    //操作元プロセス変更要求確認
+                    windowProcess = CheckChangeManipulatorProcess(controlWindowHandle, windowProcess);
 
-				//コントロールスレッド終了
-				while (controlThread.IsAlive)
+                    Thread.Sleep(200);
+                }
+                if (windowProcess != null) windowProcess.Dispose();
+
+                //コントロールスレッド終了
+                while (controlThread.IsAlive)
 				{
 					NativeMethods.PostMessage(controlWindowHandle, NativeMethods.WM_QUIT, IntPtr.Zero, IntPtr.Zero);
 					Thread.Sleep(10);
@@ -139,7 +145,38 @@ namespace Codeer.Friendly.Windows.Inside
             }).Start();
 		}
 
-        private static Process GetProcessById(int id)
+        static Process CheckChangeManipulatorProcess(IntPtr controlWindowHandle, Process windowProcess)
+        {
+            lock (_manipulatorPocessChangeDictionary)
+            {
+                if (_manipulatorPocessChangeDictionary.TryGetValue(controlWindowHandle, out var value))
+                {
+                    windowProcess.Dispose();
+                    windowProcess = GetProcessById(value);
+                    _manipulatorPocessChangeDictionary.Remove(controlWindowHandle);
+                }
+            }
+
+            return windowProcess;
+        }
+
+        static void ChangeManipulatorProcess(IntPtr controlWindowHandle, int newProcess)
+        {
+            lock (_manipulatorPocessChangeDictionary)
+            {
+                _manipulatorPocessChangeDictionary[controlWindowHandle] = newProcess;
+            }
+            while (true)
+            {
+                lock (_manipulatorPocessChangeDictionary)
+                {
+                    if (!_manipulatorPocessChangeDictionary.ContainsKey(controlWindowHandle)) break;
+                }
+                Thread.Sleep(1);
+            }
+        }
+
+        static Process GetProcessById(int id)
         {
             Process process = null;
 

@@ -74,6 +74,7 @@
     <Compile Include="Inside\NativeMethods.cs" />
     <Compile Include="Inside\ProtocolMessageManager.cs" />
     <Compile Include="Inside\ResourcesLocal.cs" />
+    <Compile Include="Inside\SerializeUtility.cs" />
     <Compile Include="Inside\SystemController.cs" />
     <Compile Include="Inside\SystemStartResponseReciever.cs" />
     <Compile Include="Inside\SystemStarterInApp.cs" />

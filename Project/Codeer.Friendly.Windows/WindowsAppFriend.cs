@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Codeer.Friendly.Windows.Inside;
 using Codeer.Friendly.Inside.Protocol;
-using Codeer.Friendly.Windows.Inside.CopyDataProtocol;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -38,8 +37,8 @@ namespace Codeer.Friendly.Windows
         /// </summary>
 #else
         /// <summary>
-		/// 接続者。
-		/// </summary>
+        /// 接続者。
+        /// </summary>
 #endif
         protected override IFriendlyConnector FriendlyConnector { get { return new FriendlyConnectorWrap(this); } }
 
@@ -221,6 +220,28 @@ namespace Codeer.Friendly.Windows
             ResourcesLocal.Install(this);
         }
 
+#if ENG
+        /// <summary>
+        /// It is a constructor. Used to take over connection information.
+        /// </summary>
+        /// <param name="executeContextWindowHandle">
+        /// Windowshandle that belongs to the target process.
+        /// Operations are carried out in the thread of this window. 
+        /// <param name="bin">Connection information serialized binary.</param>
+#else
+        /// <summary>
+        /// コンストラクタです。接続情報を引き継ぐときに使います。
+        /// </summary>
+        /// <param name="executeContextWindowHandle">接続対象プロセスの処理実行スレッドのウィンドウハンドル。</param>
+        /// <param name="bin">接続情報がシリアライズされたバイナリ。</param>
+#endif
+        public WindowsAppFriend(IntPtr executeContextWindowHandle, byte[] bin)
+        {
+            _systemController = (SystemController)SerializeUtility.Deserialize(bin);
+            _context = new ExecuteContext(_systemController.StartFriendlyConnector(executeContextWindowHandle));
+            NativeMethods.GetWindowThreadProcessId(executeContextWindowHandle, out _processId);
+        }
+
         /// <summary>
         /// コンストラクタ。
         /// </summary>
@@ -242,7 +263,7 @@ namespace Codeer.Friendly.Windows
 		{
 			Dispose(false);
 		}
-#if ENG      
+#if ENG
         /// <summary>
         /// Attach to other AppDomain.
         /// </summary>
@@ -374,6 +395,34 @@ namespace Codeer.Friendly.Windows
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public void LoadAssembly(Assembly assembly)
             => WindowsAppExpander.LoadAssembly(this, assembly);
+
+#if ENG
+        /// <summary>
+        /// Transfer communication information. You can not use this function after calling this method.
+        /// </summary>
+        /// <param name="newManipulatorProcessId">Process ID of the takeover destination.</param>
+        /// <returns>Connection information serialized binary.</returns>
+#else
+        /// <summary>
+        /// 通信情報を譲り渡します。このメソッドを呼んだ後、この関数を使うことはできません。
+        /// </summary>
+        /// <param name="newManipulatorProcessId">引き継ぎ先のプロセスID</param>
+        /// <returns>接続情報がシリアライズされたバイナリ。</returns>
+#endif
+        public byte[] HandOverResources(int newManipulatorProcessId)
+        {
+            //操作元プロセス変更
+            this[typeof(SystemStarterInApp), "ChangeManipulatorProcess"](_systemController.SystemControlWindowInAppHandle, newManipulatorProcessId);
+
+            //コンテキスト破棄
+            _context.Dispose();
+
+            //システム操作情報シリアライズ
+            var bin = SerializeUtility.Serialize(_systemController);
+            _systemController = null;
+
+            return bin;
+        }
 
         /// <summary>
         /// 送受信

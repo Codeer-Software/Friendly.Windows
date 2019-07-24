@@ -35,32 +35,17 @@ namespace Codeer.Friendly.Windows.Inside.CopyDataProtocol
 			_data = data;
 		}
 
-		/// <summary>
-		/// シリアライズ。
-		/// </summary>
-		/// <returns>バイナリ。</returns>
-		internal byte[] Serialize()
-		{
-			IFormatter formatter = new BinaryFormatter();
-			using (MemoryStream stream = new MemoryStream())
-			{
-				formatter.Serialize(stream, this);
-				return stream.ToArray();
-			}
-		}
+        /// <summary>
+        /// シリアライズ。
+        /// </summary>
+        /// <returns>バイナリ。</returns>
+        internal byte[] Serialize() => SerializeUtility.Serialize(this);
 
-		/// <summary>
-		/// デシリアライズ。
-		/// </summary>
-		/// <param name="bin">バイナリ。</param>
-		/// <returns>データ。</returns>
-		internal static CopyDataProtocolInfo Deserialize(byte[] bin)
-		{
-			IFormatter formatter = new BinaryFormatter();
-			using (MemoryStream stream = new MemoryStream(bin))
-			{
-				return (CopyDataProtocolInfo)formatter.Deserialize(stream);
-			}
-		}
-	}
+        /// <summary>
+        /// デシリアライズ。
+        /// </summary>
+        /// <param name="bin">バイナリ。</param>
+        /// <returns>データ。</returns>
+        internal static CopyDataProtocolInfo Deserialize(byte[] bin) => (CopyDataProtocolInfo)SerializeUtility.Deserialize(bin);
+    }
 }
