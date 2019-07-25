@@ -2,18 +2,18 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Codeer.Friendly.Windows</id>
-    <version>2.12.0</version>
+    <version>2.13.1</version>
     <title>Friendly.Windows</title>
     <authors>Codeer</authors>
     <owners>Codeer</owners>
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <licenseUrl>https://github.com/Codeer-Software/Friendly.Windows/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/Codeer-Software/Friendly.Windows</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Codeer-Software/Friendly/master/FriendlyNuget128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This is used for test automation of Windows applications. You can call the API of separate process from outside.</description>
     <tags>Friendly Testing Windows WPF WinForms Win32 Automation</tags>
     <dependencies>
-      <dependency id="Codeer.Friendly" version="2.5.2" />
+      <dependency id="Codeer.Friendly" version="2.6.1" />
     </dependencies>
   </metadata>
   <files>

@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
+using Codeer.Friendly;
 using Codeer.Friendly.Dynamic;
 using Codeer.Friendly.Windows;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,8 +11,10 @@ namespace UnitTest
     [TestClass]
     public class Test
     {
-        [TestMethod]
-        public void Execute64()
+        WindowsAppFriend app2;
+
+        [TestInitialize]
+        public void TestInitialize()
         {
             //対象プロセス(x64)
             var targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetx86\bin\Debug\TestTargetx86.exe");
@@ -25,12 +29,68 @@ namespace UnitTest
             //バイナリを元にWindowsAppFriend生成
             var bin = File.ReadAllBytes(binPath);
             File.Delete(binPath);
-            var app2 = new WindowsAppFriend(targetApp.MainWindowHandle, bin);
+            app2 = new WindowsAppFriend(targetApp.MainWindowHandle, bin);
+        }
 
+        [TestCleanup]
+        public void TestCleanup() => Process.GetProcessById(app2.ProcessId).Kill();
+
+        [TestMethod]
+        public void Execute64()
+        {
             //操作確認
             app2.Type("System.Windows.Application").Current.MainWindow.Title = "xxx";
-
-            targetApp.Kill();
         }
+
+        [TestMethod]
+        public void ConvertToWrapper()
+        {
+            WindowWrapper w = app2.Type("System.Windows.Application").Current.MainWindow;
+            w.Title = "yyy";
+        }
+
+        [TestMethod]
+        public void ConvertNull()
+        {
+            app2.LoadAssembly(GetType().Assembly);
+            WindowWrapper w = app2.Null();
+            Assert.IsNull(w);
+        }
+
+        [TestMethod]
+        public void SerializeTest()
+        {
+            app2.LoadAssembly(GetType().Assembly);
+            WindowWrapperSerializable data = app2.Type(GetType()).SerializableData;
+            Assert.AreEqual(100, data.Value);
+        }
+
+        public class WindowWrapper
+        {
+            AppVar _core;
+            public WindowWrapper(AppVar src)
+            {
+                _core = src;
+            }
+
+            public string Title
+            {
+                get => _core.Dynamic().Title;
+                set => _core.Dynamic().Title = value;
+            }
+        }
+
+        public static WindowWrapperSerializable SerializableData = new WindowWrapperSerializable { Value = 100 };
+
+        [Serializable]
+        public class WindowWrapperSerializable
+        {
+            public int Value { get; set; }
+
+            public WindowWrapperSerializable(AppVar src) { }
+
+            public WindowWrapperSerializable() { }
+        }
+
     }
 }
