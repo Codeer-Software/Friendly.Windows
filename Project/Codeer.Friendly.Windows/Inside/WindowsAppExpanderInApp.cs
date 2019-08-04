@@ -56,7 +56,7 @@ namespace Codeer.Friendly.Windows.Inside
             catch { }
             if (asm == null)
             {
-                asm = Assembly.LoadFile(filePath);
+                asm = Assembly.LoadFrom(filePath);
             }
             EntryAssembly(asm);
         }
