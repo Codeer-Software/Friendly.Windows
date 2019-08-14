@@ -129,6 +129,12 @@
   <ItemGroup>
     <None Include="Resources\Codeer.Friendly.Windows.Step.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CodeerFriendlyWindowsCore_x86.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CodeerFriendlyWindowsCore_x64.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release mkdir "../../../ReleaseBinary"

@@ -27,6 +27,22 @@ namespace Codeer.Friendly.Windows.Inside
         }
 
         /// <summary>
+        /// CodeerFriendlyWindows_cpu.dllのフルパス。
+        /// </summary>
+        internal static string CodeerFriendlyWindowsCoreNativeDllPath
+        {
+            get
+            {
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                            "Codeer.Friendly");
+                string cpu = (IntPtr.Size == 4) ? "x86" : "x64";
+                string dllName = "CodeerFriendlyWindowsCore_" + cpu + "_0000.dll";
+                string dllPath = Path.Combine(dir, dllName);
+                return dllPath;
+            }
+        }
+
+        /// <summary>
         /// 踏み台用DLLのフルパス。
         /// </summary>
         static string CodeerFriendlyWindowsStepDllPth
@@ -49,6 +65,18 @@ namespace Codeer.Friendly.Windows.Inside
         {
             string dllPath = CodeerFriendlyWindowsNativeDllPath;
             byte[] dllData = (IntPtr.Size == 4) ? Resources.CodeerFriendlyWindows_x86 : Resources.CodeerFriendlyWindows_x64;
+            InstallDll(dllPath, dllData);
+            return dllPath;
+        }
+
+        /// <summary>
+        /// ネイティブのCodeerFriendlyWindows_cpu.dllの初期化。
+        /// </summary>
+        /// <returns>CodeerFriendlyWindows_cpu.dllのフルパス。</returns>
+        internal static string InitializeCodeerFriendlyWindowsCoreNative()
+        {
+            string dllPath = CodeerFriendlyWindowsCoreNativeDllPath;
+            byte[] dllData = (IntPtr.Size == 4) ? Resources.CodeerFriendlyWindowsCore_x86 : Resources.CodeerFriendlyWindowsCore_x64;
             InstallDll(dllPath, dllData);
             return dllPath;
         }

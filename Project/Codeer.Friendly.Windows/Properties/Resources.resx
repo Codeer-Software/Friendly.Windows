@@ -259,4 +259,10 @@ The specified type's full name is incorrect or the module containing the type ha
   <data name="ErrorAttachOtherDomainsNeedNet4" xml:space="preserve">
     <value>If you use AttachOtherDomains, .netframework4.0 must be installed.</value>
   </data>
+  <data name="CodeerFriendlyWindowsCore_x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CodeerFriendlyWindowsCore_x64.dll;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CodeerFriendlyWindowsCore_x86" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CodeerFriendlyWindowsCore_x86.dll;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

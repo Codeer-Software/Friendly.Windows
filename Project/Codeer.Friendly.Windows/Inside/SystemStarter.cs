@@ -63,7 +63,18 @@ namespace Codeer.Friendly.Windows.Inside
                 }
 
                 //PCにDLLインストール
-                string injectionDllPath = DllInstaller.InitializeCodeerFriendlyWindowsNative();
+                string injectionDllPath = string.Empty;
+
+                //.NetCore対応
+                if (clrVersion.IndexOf("\\") != -1)
+                {
+                    injectionDllPath = DllInstaller.InitializeCodeerFriendlyWindowsCoreNative();
+                }
+                else
+                {
+                    injectionDllPath = DllInstaller.InitializeCodeerFriendlyWindowsNative();
+                }
+
                 string assemblyStepPath = DllInstaller.InitializeCodeerFriendlyWindowsStep();
 
                 //対象プロセスにDLLをロードする
