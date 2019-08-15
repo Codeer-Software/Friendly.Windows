@@ -237,6 +237,8 @@ namespace Codeer.Friendly.Windows
 #endif
         public WindowsAppFriend(IntPtr executeContextWindowHandle, byte[] bin)
         {
+            ResourcesLocal.Initialize();
+            ProtocolMessageManager.Initialize();
             _systemController = (SystemController)SerializeUtility.Deserialize(bin);
             _context = new ExecuteContext(_systemController.StartFriendlyConnector(executeContextWindowHandle));
             NativeMethods.GetWindowThreadProcessId(executeContextWindowHandle, out _processId);

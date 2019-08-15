@@ -9,14 +9,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTest
 {
     [TestClass]
-    public class Test
+    public class TestHandOverResources
     {
         WindowsAppFriend app2;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            //対象プロセス(x64)
+            //対象プロセス(x86)
             var targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetx86\bin\Debug\TestTargetx86.exe");
             var targetApp = Process.Start(targetExePath);
 

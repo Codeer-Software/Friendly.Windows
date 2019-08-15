@@ -2,11 +2,7 @@
 using System.Threading;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Codeer.Friendly.Windows.Inside;
-using Codeer.Friendly;
 using System.Globalization;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace Codeer.Friendly.Windows.Inside
@@ -109,11 +105,11 @@ namespace Codeer.Friendly.Windows.Inside
                 Application.ApplicationExit += appExit;
                 Debug.Trace("Success in App.");
                 var windowProcess = GetProcessById(windowProcessId);
+                bool isDifferentPermissions = false;
                 while (windowProcess != null)
                 {
                     //通信プロセスが消えたら終わり
-                    windowProcess.Refresh();
-                    if (windowProcess.HasExited)
+                    if (!IsExistProcess(windowProcess, ref isDifferentPermissions))
                     {
                         break;
                     }
@@ -125,7 +121,7 @@ namespace Codeer.Friendly.Windows.Inside
                     }
 
                     //操作元プロセス変更要求確認
-                    windowProcess = CheckChangeManipulatorProcess(controlWindowHandle, windowProcess);
+                    windowProcess = CheckChangeManipulatorProcess(controlWindowHandle, windowProcess, ref isDifferentPermissions);
 
                     Thread.Sleep(200);
                 }
@@ -145,7 +141,30 @@ namespace Codeer.Friendly.Windows.Inside
             }).Start();
 		}
 
-        static Process CheckChangeManipulatorProcess(IntPtr controlWindowHandle, Process windowProcess)
+        static bool IsExistProcess(Process windowProcess, ref bool isDifferentPermissions)
+        {
+            if (!isDifferentPermissions)
+            {
+                try
+                {
+                    windowProcess.Refresh();
+                    //操作側が管理者権限、対象アプリが通常権限の場合にHasExitedをコールすると例外が発生する
+                    //その場合はGetProcessByIdで判断するようにする
+                    if (windowProcess.HasExited)
+                    {
+                        return false;
+                    }
+                }
+                catch { }
+            }
+            isDifferentPermissions = true;
+            var process = GetProcessById(windowProcess.Id);
+            if (process == null) return false;
+            process.Dispose();
+            return true;
+        }
+
+        static Process CheckChangeManipulatorProcess(IntPtr controlWindowHandle, Process windowProcess, ref bool isDifferentPermissions)
         {
             lock (_manipulatorPocessChangeDictionary)
             {
@@ -154,6 +173,7 @@ namespace Codeer.Friendly.Windows.Inside
                     windowProcess.Dispose();
                     windowProcess = GetProcessById(value);
                     _manipulatorPocessChangeDictionary.Remove(controlWindowHandle);
+                    isDifferentPermissions = false;
                 }
             }
 
