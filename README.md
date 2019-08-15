@@ -6,6 +6,9 @@ It is currently designed for Windows Applications (**WinForms**, **WPF**, and **
 It can be used to start up a product process and run tests on it..
 However, the way of operating the target program is different from conventional automated GUI tests (capture replay tool, etc.).
 
+## News
+Friendly can now operate .NetCore3.0 WinForms and WPF.
+
 ## Features ...
 #### Invoke separate process's API.
 It can invoke all methods, properties, and fields.
@@ -364,6 +367,27 @@ internal struct RECT
     public int bottom;
 }
 ```
+#### .NetCore
+```cs 
+public void TestCore()
+{
+    var targetApp = Process.GetProcessesByName("TestTargetCore")[0];
+
+    //Only here is different!
+    //Pass coreclr.dll path to WindowsAppFriend constructor.
+    var dllPath = @"C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.0.0-preview7-27912-14\coreclr.dll";
+    var app = new WindowsAppFriend(targetApp, dllPath);
+
+    //Subsequent processes can be operated in the same way as .NetFramework.
+    var w = app.Type<Application>().Current.MainWindow;
+    w.Title = "Change Title";
+
+    //Also you can use RM.Friendly.WPFStandardControls.
+    var textBox = new WPFTextBox(w._textBox);
+    textBox.EmulateChangeText("abc");
+}
+```
+
 ## Upper Librarys
 ![Upper Librarys](https://github.com/Codeer-Software/Friendly.Windows/blob/master/libraries.png)
 # We win 2nd place at MVP Showcase. Thank you!
