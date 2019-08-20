@@ -483,3 +483,15 @@ BOOL __stdcall InitializeAppDomain(
 	}
 	return TRUE;
 }
+
+DWORD __stdcall HasGetCLRRuntimeHost(void* pStartInfo)
+{
+	auto path = (LPCWSTR)pStartInfo;
+	auto hmodule = ::LoadLibrary(path);
+
+	BOOL hasGetCLRRuntimeHost = ::GetProcAddress(hmodule, "GetCLRRuntimeHost") != nullptr;
+
+	::FreeLibrary(hmodule);
+
+	return hasGetCLRRuntimeHost;
+}

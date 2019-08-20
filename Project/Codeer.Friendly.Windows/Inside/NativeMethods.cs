@@ -690,6 +690,18 @@ namespace Codeer.Friendly.Windows.Inside
         [DllImport("user32.dll", ExactSpelling = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool KillTimer(IntPtr hWnd, IntPtr uIDEvent);
+
+        internal enum ListModules : int
+        {
+            ListModules32Bit = 0x01,
+            ListModules64Bit = 0x02,
+            ListModulesAll = 0x03,
+            ListModulesDefault = 0x0,
+        }
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("kernel32.dll", ExactSpelling = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        internal static extern bool GetExitCodeThread(IntPtr hWnd, out uint lpdwExitCode);
     }
 }
 

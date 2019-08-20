@@ -63,24 +63,29 @@ namespace Codeer.Friendly.Windows.Inside
                 }
 
                 //PCにDLLインストール
-                string injectionDllPath = string.Empty;
-
-                //.NetCore対応
-                if (clrVersion.IndexOf("\\") != -1)
-                {
-                    injectionDllPath = DllInstaller.InitializeCodeerFriendlyWindowsCoreNative();
-                }
-                else
-                {
-                    injectionDllPath = DllInstaller.InitializeCodeerFriendlyWindowsNative();
-                }
-
-                string assemblyStepPath = DllInstaller.InitializeCodeerFriendlyWindowsStep();
+                var injectionDllPath = DllInstaller.InitializeCodeerFriendlyWindowsNative();
 
                 //対象プロセスにDLLをロードする
                 Debug.Trace("Dll Loading.");
                 DllInjector.LoadDll(processHandle, injectionDllPath);
                 Debug.Trace("Dll Loaded.");
+
+                //.NetCore対応
+                if (string.IsNullOrEmpty(clrVersion))
+                {
+                    clrVersion = TryGetCoreClrDllPath(processHandle, injectionDllPath);
+                }
+                if (clrVersion.IndexOf("\\") != -1)
+                {
+                    //.NetCore用の初期化DLLをインジェクションする
+                    injectionDllPath = DllInstaller.InitializeCodeerFriendlyWindowsCoreNative();
+                    Debug.Trace("Dll Loading.");
+                    DllInjector.LoadDll(processHandle, injectionDllPath);
+                    Debug.Trace("Dll Loaded.");
+                }
+
+                string assemblyStepPath = DllInstaller.InitializeCodeerFriendlyWindowsStep();
+
 
                 //初期化処理
                 return StartInApp(processHandle, processId, injectionDllPath, assemblyStepPath, 
@@ -213,6 +218,27 @@ namespace Codeer.Friendly.Windows.Inside
             }
             return initializeThreadWindowHandle + "\t" + recieveWindowHandle + "\t" +
                 clrVersion + "\t" + szAssemblyStep + "\t" + szTypeFullName + "\t" + szMethod + "\t" + szArgs;
+        }
+
+        static string TryGetCoreClrDllPath(IntPtr processHandle, string injectionForDotNetFramewrokDllPath)
+        {
+            try
+            {
+                foreach(var e in DllInjector.GetProcessModules(processHandle))
+                {
+                    var sb = new StringBuilder((1024 + 1) * 8);
+                    NativeMethods.GetModuleFileNameEx(processHandle, e, sb, sb.Capacity);
+                    var path = sb.ToString().ToLower();
+                    if (path.Contains("coreclr.dll") &&
+                        DllInjector.ExecuteRemoteFunction(processHandle, injectionForDotNetFramewrokDllPath, "HasGetCLRRuntimeHost", path) != 0)
+                    {
+                        return path;
+                    }
+                }
+                return string.Empty;
+            }
+            catch { }
+            return string.Empty;
         }
     }
 }

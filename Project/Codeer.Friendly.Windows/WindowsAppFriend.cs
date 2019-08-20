@@ -66,18 +66,20 @@ namespace Codeer.Friendly.Windows
         /// The CLR version used for the target process is determined by examining the version loaded in the target process.
         /// When in multiple CLRs are loaded using process side by side, one of the loaded versions is used. 
         /// Native code does not use the CLR, so the CLR version of the test application is used in this case.
+        /// For .NetCore, use the coreclr.dll currently loaded by the target process.
         /// </summary>
         /// <param name="process">Target application process.</param>
 #else
         /// <summary>
-		/// コンストラクタです。
-		/// 指定のプロセスに接続します。
+        /// コンストラクタです。
+        /// 指定のプロセスに接続します。
         /// この指定の場合、接続時のメインウィンドウのスレッドで処理が実行されます。
         /// 対象プロセスのCLRのバージョンは対象プロセスにロードされているものを調べて使います。
         /// インプロセスサイドバイサイドで複数CLRが起動している場合はそのどちらかを使います。
         /// ネイティブの場合CLRが動作していないので、操作側の処理が動作するランタイムと同じバージョンを使います。
-		/// </summary>
-		/// <param name="process">接続対象プロセス。</param>
+        /// .NetCoreの場合は対象プロセスが現在ロードしているcoreclr.dllを利用します。
+        /// </summary>
+        /// <param name="process">接続対象プロセス。</param>
 #endif
         public WindowsAppFriend(Process process) : this(process, string.Empty) { }
 
@@ -93,6 +95,7 @@ namespace Codeer.Friendly.Windows
         /// <param name="executeContextWindowHandle">
         /// Windowshandle that belongs to the target process.
         /// Operations are carried out in the thread of this window. 
+        /// For .NetCore, use the coreclr.dll currently loaded by the target process.
         /// </param>
 #else
         /// <summary>
@@ -102,6 +105,7 @@ namespace Codeer.Friendly.Windows
         /// 対象プロセスのCLRのバージョンは対象プロセスにロードされているものを調べて使います。
         /// インプロセスサイドバイサイドで複数CLRが起動している場合はそのどちらかを使います。
         /// ネイティブの場合CLRが動作していないので、操作側の処理が動作するランタイムと同じバージョンを使います。
+        /// .NetCoreの場合は対象プロセスが現在ロードしているcoreclr.dllを利用します。
         /// </summary>
         /// <param name="executeContextWindowHandle">接続対象プロセスの処理実行スレッドのウィンドウハンドル。</param>
 #endif
@@ -118,17 +122,19 @@ namespace Codeer.Friendly.Windows
         /// CLR version of the target process. "v2.0.50727", "v4.0.30319"
         /// For more information please refer to the Microsoft site.
         /// To ensure backward compatibility, Friendly allows “2.0” for “v2.0.50727” and “4.0” for “v4.0.30319”, but these are now deprecated.
+        /// For .NetCore, you can specify the full path of coreclr.dll.
         /// </param>
 #else
         /// <summary>
-		/// コンストラクタです。
-		/// 指定のプロセスに接続します。
+        /// コンストラクタです。
+        /// 指定のプロセスに接続します。
         /// この指定の場合、接続時のメインウィンドウのスレッドで処理が実行されます。
-		/// </summary>
-		/// <param name="process">接続対象プロセス。</param>
+        /// </summary>
+        /// <param name="process">接続対象プロセス。</param>
         /// <param name="clrVersion">CLRのバージョン "v2.0.50727", "v4.0.30319" のように入力してください。
         /// 詳細はマイクロソフトのサイトを参照お願いします。
         /// Friendlyの過去のバージョンとの互換性のため"v2.0.50727"は"2.0", "v4.0.30319"は"4.0"と入力することも可能ですが、今後これは非推奨となります。
+        /// .NetCoreの場合はcoreclr.dllのフルパスを指定することができます。
         /// </param>
 #endif
         public WindowsAppFriend(Process process, string clrVersion)
@@ -189,6 +195,7 @@ namespace Codeer.Friendly.Windows
         /// CLR version of the target process. "v2.0.50727", "v4.0.30319"
         /// For more information please refer to the Microsoft site.
         /// To ensure backward compatibility, Friendly allows “2.0” for “v2.0.50727” and “4.0” for “v4.0.30319”, but these are now deprecated.
+        /// For .NetCore, you can specify the full path of coreclr.dll.
         /// </param>
 #else
         /// <summary>
@@ -200,6 +207,7 @@ namespace Codeer.Friendly.Windows
         /// <param name="clrVersion">CLRのバージョン "v2.0.50727", "v4.0.30319" のように入力してください。
         /// 詳細はマイクロソフトのサイトを参照お願いします。
         /// Friendlyの過去のバージョンとの互換性のため"v2.0.50727"は"2.0", "v4.0.30319"は"4.0"と入力することも可能ですが、今後これは非推奨となります。
+        /// .NetCoreの場合はcoreclr.dllのフルパスを指定することができます。
         /// </param>
 #endif
         public WindowsAppFriend(IntPtr executeContextWindowHandle, string clrVersion)

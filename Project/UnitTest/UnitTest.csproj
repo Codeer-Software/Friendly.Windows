@@ -63,7 +63,7 @@
     <Compile Include="TestCore.cs" />
     <Compile Include="TestHandOverResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestPermission.cs" />
+    <Compile Include="TestNetFramewrok.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

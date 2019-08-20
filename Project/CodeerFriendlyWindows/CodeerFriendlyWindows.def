@@ -3,3 +3,4 @@ EXPORTS
    InitializeFriendly
    EnumDomains
    InitializeAppDomain
+   HasGetCLRRuntimeHost

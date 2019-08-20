@@ -373,12 +373,8 @@ public void TestCore()
 {
     var targetApp = Process.GetProcessesByName("TestTargetCore")[0];
 
-    //Only here is different!
-    //Pass coreclr.dll path to WindowsAppFriend constructor.
-    var dllPath = @"C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.0.0-preview7-27912-14\coreclr.dll";
-    var app = new WindowsAppFriend(targetApp, dllPath);
-
-    //Subsequent processes can be operated in the same way as .NetFramework.
+    //You can operate in exactly the same way.
+    var app = new WindowsAppFriend(targetApp);
     var w = app.Type<Application>().Current.MainWindow;
     w.Title = "Change Title";
 

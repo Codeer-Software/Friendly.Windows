@@ -15,17 +15,15 @@ namespace UnitTest
         [TestInitialize]
         public void TestInitialize()
         {
-            var dllPath = @"C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.0.0-preview7-27912-14\coreclr.dll";
             var targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetCore\bin\DebugAnyCpu\netcoreapp3.0\TestTargetCore.exe");
             if (IntPtr.Size == 4)
             {
                 //not tested.
-                dllPath = @"C:\Program Files (x86)\Microsoft Web Tools\DNU\runtime.win7-x64.Microsoft.NETCore.Runtime.CoreCLR\1.0.1-beta-23409\runtimes\win7-x64\native\coreclr.dll";
                 targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetCore\bin\Debugx86\netcoreapp3.0\TestTargetCore.exe");
             }
 
             var targetApp = Process.Start(targetExePath);
-            _app = new WindowsAppFriend(targetApp, dllPath);
+            _app = new WindowsAppFriend(targetApp);
         }
 
         [TestCleanup]

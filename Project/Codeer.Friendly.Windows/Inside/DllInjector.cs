@@ -74,13 +74,15 @@ namespace Codeer.Friendly.Windows.Inside
         /// <param name="dllPath">DLL。</param>
         /// <param name="function">関数名称。</param>
         /// <param name="args">引数。</param>
-        internal static void ExecuteRemoteFunction(IntPtr processHandle, string dllPath, string function, string args)
+        /// <returns>実行したメソッドの戻り値</returns>
+        internal static uint ExecuteRemoteFunction(IntPtr processHandle, string dllPath, string function, string args)
         {
             IntPtr pArgs = IntPtr.Zero;
-            IntPtr hThreadServerOpen = IntPtr.Zero;
+            IntPtr hThreadInTarget = IntPtr.Zero;
+            uint resultVlaue = 0;
             try
             {
-                //受信ウィンドウハンドルを対象プロセス内にメモリを確保して書き込む longを文字列化して書き込む
+                //引数を相手プロセスに書き込む
                 List<byte> startInfoTmp = new List<byte>(Encoding.Unicode.GetBytes(args));
                 startInfoTmp.Add(0);//null終端を足す
                 byte[] startInfo = startInfoTmp.ToArray();
@@ -100,22 +102,28 @@ namespace Codeer.Friendly.Windows.Inside
                         throw new FriendlyOperationException(ResourcesLocal.Instance.ErrorFriendlySystem);
                     }
 
-                    //対象プロセスでサーバー開始メソッドを実行
+                    //対象プロセスでメソッドを実行
                     IntPtr tid;
-                    hThreadServerOpen = NativeMethods.CreateRemoteThread(processHandle, IntPtr.Zero, IntPtr.Zero,
+                    hThreadInTarget = NativeMethods.CreateRemoteThread(processHandle, IntPtr.Zero, IntPtr.Zero,
                                 pFunc, pArgs, 0, out tid);
-                    if (hThreadServerOpen == IntPtr.Zero)
+                    if (hThreadInTarget == IntPtr.Zero)
                     {
                         throw new FriendlyOperationException(ResourcesLocal.Instance.ErrorProcessOperation);
                     }
-                    NativeMethods.WaitForSingleObject(hThreadServerOpen, NativeMethods.INFINITE);
+                    NativeMethods.WaitForSingleObject(hThreadInTarget, NativeMethods.INFINITE);
+
+                    //戻り値を取得
+                    if (NativeMethods.GetExitCodeThread(hThreadInTarget, out var ret))
+                    {
+                        resultVlaue = ret;
+                    }
                 }
             }
             finally
             {
-                if (hThreadServerOpen != IntPtr.Zero)
+                if (hThreadInTarget != IntPtr.Zero)
                 {
-                    NativeMethods.CloseHandle(hThreadServerOpen);
+                    NativeMethods.CloseHandle(hThreadInTarget);
                 }
                 if (pArgs != IntPtr.Zero)
                 {
@@ -123,6 +131,7 @@ namespace Codeer.Friendly.Windows.Inside
                              IntPtr.Zero, NativeMethods.FreeType.Release);
                 }
             }
+            return resultVlaue;
         }
 
         /// <summary>
@@ -188,21 +197,7 @@ namespace Codeer.Friendly.Windows.Inside
         private static IntPtr GetModuleBase(IntPtr processHandle, string dllPath)
         {
             //指定プロセスのロードしているモジュールを全取得
-            IntPtr[] lphModule = new IntPtr[0];
-            while (true)
-            {
-                uint binSize;
-                if (!NativeMethods.EnumProcessModules(processHandle, lphModule, (uint)(lphModule.Length * IntPtr.Size), out binSize))
-                {
-                    return IntPtr.Zero;
-                }
-                int modCount = (int)(binSize / IntPtr.Size);
-                if (modCount == lphModule.Length)
-                {
-                    break;
-                }
-                lphModule = new IntPtr[modCount];
-            }
+            var lphModule = GetProcessModules(processHandle);
 
             //指定のdllのベースアドレスを取得。
             for (int i = 0; i < lphModule.Length; i++)
@@ -218,6 +213,27 @@ namespace Codeer.Friendly.Windows.Inside
                 }
             }
             return IntPtr.Zero;
+        }
+
+        internal static IntPtr[] GetProcessModules(IntPtr processHandle)
+        {
+            //指定プロセスのロードしているモジュールを全取得
+            IntPtr[] lphModule = new IntPtr[0];
+            while (true)
+            {
+                uint binSize;
+                if (!NativeMethods.EnumProcessModules(processHandle, lphModule, (uint)(lphModule.Length * IntPtr.Size), out binSize))
+                {
+                    return new IntPtr[0];
+                }
+                int modCount = (int)(binSize / IntPtr.Size);
+                if (modCount == lphModule.Length)
+                {
+                    break;
+                }
+                lphModule = new IntPtr[modCount];
+            }
+            return lphModule;
         }
     }
 }
