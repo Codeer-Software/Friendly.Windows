@@ -18,8 +18,7 @@ All Methods, Properties and Fields can be called regardless of being public inte
 It can inject .net assembly. And can execute inserted methods.
 
 ## Getting Started
-Install from NuGet<br>
-WPF
+Install Friendly.Windows from NuGet<br>
 
     PM> Install-Package Codeer.Friendly.Windows
 
