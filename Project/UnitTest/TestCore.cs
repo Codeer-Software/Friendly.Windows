@@ -15,11 +15,11 @@ namespace UnitTest
         [TestInitialize]
         public void TestInitialize()
         {
-            var targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetCore\bin\DebugAnyCpu\netcoreapp3.0\TestTargetCore.exe");
+            var targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetCore\bin\Debug\netcoreapp3.0\TestTargetCore.exe");
             if (IntPtr.Size == 4)
             {
                 //not tested.
-                targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetCore\bin\Debugx86\netcoreapp3.0\TestTargetCore.exe");
+                targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\TestTargetCore\bin\Debug\netcoreapp3.0\TestTargetCore.exe");
             }
 
             var targetApp = Process.Start(targetExePath);
