@@ -20,7 +20,7 @@ namespace Codeer.Friendly.Windows.Inside
                 string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                             "Codeer.Friendly");
                 string cpu = (IntPtr.Size == 4) ? "x86" : "x64";
-                string dllName = "CodeerFriendlyWindows_" + cpu + "_1035.dll";
+                string dllName = "CodeerFriendlyWindows_" + cpu + "_1036.dll";
                 string dllPath = Path.Combine(dir, dllName);
                 return dllPath;
             }
