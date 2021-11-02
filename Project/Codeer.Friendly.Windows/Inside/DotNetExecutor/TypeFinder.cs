@@ -9,105 +9,141 @@ namespace Codeer.Friendly.DotNetExecutor
 	/// </summary>
 	public class TypeFinder
 	{
-		Dictionary<string, Type> _fullNameAndType = new Dictionary<string, Type>();
-
-		/// <summary>  
-		/// タイプフルネームから型を取得する。
-		/// </summary>  
-		/// <param name="typeFullName">タイプフルネーム。</param>  
-		/// <returns>取得した型。</returns>  
-		public Type GetType(string typeFullName)
-		{
-			lock (_fullNameAndType)
-			{
-				//キャッシュを見る
-				Type type = null;
-				if (_fullNameAndType.TryGetValue(typeFullName, out type))
-				{
-					return type;
-				}
-
-				//各アセンブリに問い合わせる			
-				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				List<Type> assemblyTypes = new List<Type>();
-				type = GetTypeCore(assemblies, typeFullName);
-				if (type == null)
-				{
-					// 見つからない場合は型情報のみ残して再検索する
-					// （.NET5から.NET Core3.1への参照等、バージョン違いで変換できる場合は変換し直して使用できるようにする）
-					// System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version = 5.0.0.0, Culture = neutral, PublicKeyToken = 7cec85d7bea7798e]]
-					// という名前を
-					// System.Collections.Generic.List`1[[System.Int32]]
-					// という感じで「,」と「]」の間を削除する
-					// ただし、System以外のアセンブリ指定の場合は変換できないのでそのまま使用する
-					bool isDelete = false;
-					bool isSkip = false;
-					string typeFullNameTmp = string.Empty;
-					int length = typeFullName.Length;
-					for (int i = 0; i < length; i++)
-					{
-						var tmp = typeFullName.Substring(i, 1);
-						switch (tmp)
-						{
-							case ",":
-                                {
-									var nextChar = (i < length - 1) ? typeFullName.Substring(i + 1, 1) : string.Empty;
-									if (isDelete || isSkip || nextChar == "[")
-									{
-										break;
-									}
-									// []の間の文字列を取得して型変換できるかチェックする
-									int indexStart = typeFullName.Substring(0, i).LastIndexOf('[') + 1;
-									int indexEnd = typeFullName.IndexOf(']', indexStart);
-									var typeName = typeFullName.Substring(indexStart, indexEnd - indexStart);
-									if (GetTypeCore(assemblies, typeName) != null)
-									{
-										// 取得できる場合はそのまま使用する
-										isSkip = true;
-										break;
-									}
-									isDelete = true;
-								}
-								continue;
-							case "]":
-								isSkip = false;
-								isDelete = false;
-								break;
-						}
-						if (isDelete)
-						{
-							continue;
-						}
-						typeFullNameTmp += tmp;
-					}
-					type = GetTypeCore(assemblies, typeFullNameTmp);
-				}
-				if (type != null)
-				{
-					_fullNameAndType.Add(typeFullName, type);
-				}
-				return type;
-			}
-		}  
+		TypeFinderCore _core = new TypeFinderCore();
 
 		/// <summary>
-		/// 各アセンブリからフルネーム指定で型を取得
+		/// 型を取得
 		/// </summary>
-		/// <param name="assemblies">検索対象アセンブリ一覧</param>
-		/// <param name="typeFullName">タイプフルネーム</param>
+		/// <param name="typeFullName">型文字列</param>
 		/// <returns>型</returns>
-		Type GetTypeCore(Assembly[] assemblies, string typeFullName)
-        {
-			foreach (Assembly assembly in assemblies)
+		public Type GetType(string typeFullName)
+		{
+			var type = _core.GetType(typeFullName);
+			if (type != null) return type;
+			var stringType = StringType.Parse(typeFullName);
+			if (stringType == null) return null;
+			return stringType.MakeType(_core);
+		}
+
+		/// <summary>
+		/// 型に関するユーティリティー。
+		/// </summary>
+		internal class TypeFinderCore
+		{
+			Dictionary<string, Type> _fullNameAndType = new Dictionary<string, Type>();
+			/// <summary>
+			/// タイプフルネームから型を取得する。
+			/// </summary>
+			/// <param name="typeFullName">タイプフルネーム。</param>
+			/// <returns>取得した型。</returns>
+			internal Type GetType(string typeFullName)
 			{
-				var type = assembly.GetType(typeFullName);
-				if (type != null)
+				lock (_fullNameAndType)
 				{
+					//キャッシュを見る
+					Type type = null;
+					if (_fullNameAndType.TryGetValue(typeFullName, out type))
+					{
+						return type;
+					}
+					//各アセンブリに問い合わせる			
+					Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+					List<Type> assemblyTypes = new List<Type>();
+					foreach (Assembly assembly in assemblies)
+					{
+						type = assembly.GetType(typeFullName);
+						if (type != null)
+						{
+							break;
+						}
+					}
+					if (type != null)
+					{
+						_fullNameAndType.Add(typeFullName, type);
+					}
 					return type;
 				}
 			}
+		}
 
-			return null;
+		/// <summary>
+		/// 解析後の型情報クラス
+		/// </summary>
+		public class StringType
+		{
+			/// <summary>
+			/// 型名
+			/// </summary>
+			public string FullName { get; set; }
+			/// <summary>
+			/// 型パラメーター情報
+			/// </summary>
+			public List<StringType> GenericTypes { get; set; } = new List<StringType>();
+			internal Type MakeType(TypeFinderCore core)
+			{
+				var type = core.GetType(FullName);
+				if (type == null) return null;
+				if (GenericTypes.Count <= 0) return type;
+				var genericTypes = new List<Type>();
+				foreach (var typeTmp in GenericTypes)
+				{
+					genericTypes.Add(typeTmp.MakeType(core));
+				}
+
+				try
+				{
+					return type.MakeGenericType(genericTypes.ToArray());
+				}
+				catch { }
+
+				return null;
+			}
+
+			/// <summary>
+			/// 型名の付加情報を削除してから変換する為に解析する
+			/// </summary>
+			/// <param name="typeFullName">型名</param>
+			/// <returns>解析後の型情報</returns>
+			internal static StringType Parse(string typeFullName)
+			{
+				var genelicCountIndex = typeFullName.IndexOf('`');
+				// 普通のタイプ
+				if (genelicCountIndex == -1)
+				{
+					return new StringType { FullName = typeFullName.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)[0] };
+				}
+				// ジェネリック
+				var genericTypeStart = typeFullName.IndexOf('[');
+				var genericType = new StringType { FullName = typeFullName.Substring(0, genericTypeStart) };
+				var genericCount = int.Parse(typeFullName.Substring(genelicCountIndex + 1, genericTypeStart - genelicCountIndex - 1));
+				var scope = 0;
+				// 下記例の「System.Int32」の開始位置
+				// System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version = 5.0.0.0, Culture = neutral, PublicKeyToken = 7cec85d7bea7798e]]
+				var typeInfoStartIndex = -1;
+				for (int i = genericTypeStart + 1; i < typeFullName.Length; i++)
+				{
+					if (typeFullName[i] == '[')
+					{
+						if (typeInfoStartIndex == -1) typeInfoStartIndex = i;
+						scope++;
+					}
+					else if (typeFullName[i] == ']')
+					{
+						scope--;
+					}
+					else
+					{
+						continue;
+					}
+					if (scope == 0)
+					{
+						genericType.GenericTypes.Add(Parse(typeFullName.Substring(typeInfoStartIndex + 1, i - typeInfoStartIndex - 1)));
+						if (genericType.GenericTypes.Count == genericCount) break;
+						typeInfoStartIndex = -1;
+					}
+				}
+				return genericType;
+			}
 		}
 	}
 }
