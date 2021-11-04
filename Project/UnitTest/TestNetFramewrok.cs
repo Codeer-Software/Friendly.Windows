@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Codeer.Friendly.Dynamic;
 using Codeer.Friendly.Windows;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -39,6 +40,7 @@ namespace UnitTest
             app.Type("System.Windows.Application").Current.MainWindow.Title = "xxx";
 
             targetApp.Kill();
+            Thread.Sleep(1000);
         }
     }
 }
