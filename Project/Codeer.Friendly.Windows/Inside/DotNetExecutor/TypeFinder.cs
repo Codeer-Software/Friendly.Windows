@@ -18,11 +18,22 @@ namespace Codeer.Friendly.DotNetExecutor
 		/// <returns>型</returns>
 		public Type GetType(string typeFullName)
 		{
-			var type = _core.GetType(typeFullName);
+			var type = _core.GetTypeFromCache(typeFullName);
 			if (type != null) return type;
+			type = _core.GetType(typeFullName);
+			if (type != null)
+			{
+				_core.UpdateCache(typeFullName, type);
+				return type;
+			}
 			var stringType = StringType.Parse(typeFullName);
 			if (stringType == null) return null;
-			return stringType.MakeType(_core);
+			type = stringType.MakeType(_core);
+			if (type != null)
+			{
+				_core.UpdateCache(typeFullName, type);
+			}
+			return type;
 		}
 
 		/// <summary>
@@ -31,6 +42,40 @@ namespace Codeer.Friendly.DotNetExecutor
 		internal class TypeFinderCore
 		{
 			Dictionary<string, Type> _fullNameAndType = new Dictionary<string, Type>();
+
+			/// <summary>
+			/// キャッシュから型を取得する
+			/// </summary>
+			/// <param name="typeFullName">タイプフルネーム</param>
+			/// <returns>型</returns>
+			internal Type GetTypeFromCache(string typeFullName)
+			{
+				lock (_fullNameAndType)
+				{
+					Type type = null;
+					_fullNameAndType.TryGetValue(typeFullName, out type);
+
+					return type;
+				}
+			}
+
+			/// <summary>
+			/// キャッシュを更新する
+			/// </summary>
+			/// <param name="typeFullName">タイプフルネーム</param>
+			/// <param name="type">型</param>
+			internal void UpdateCache(string typeFullName, Type type)
+			{
+				lock (_fullNameAndType)
+				{
+					if (type == null)
+					{
+						return;
+					}
+					_fullNameAndType[typeFullName] = type;
+				}
+			}
+
 			/// <summary>
 			/// タイプフルネームから型を取得する。
 			/// </summary>
@@ -38,31 +83,19 @@ namespace Codeer.Friendly.DotNetExecutor
 			/// <returns>取得した型。</returns>
 			internal Type GetType(string typeFullName)
 			{
-				lock (_fullNameAndType)
+				Type type = null;
+				//各アセンブリに問い合わせる			
+				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				List<Type> assemblyTypes = new List<Type>();
+				foreach (Assembly assembly in assemblies)
 				{
-					//キャッシュを見る
-					Type type = null;
-					if (_fullNameAndType.TryGetValue(typeFullName, out type))
-					{
-						return type;
-					}
-					//各アセンブリに問い合わせる			
-					Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-					List<Type> assemblyTypes = new List<Type>();
-					foreach (Assembly assembly in assemblies)
-					{
-						type = assembly.GetType(typeFullName);
-						if (type != null)
-						{
-							break;
-						}
-					}
+					type = assembly.GetType(typeFullName);
 					if (type != null)
 					{
-						_fullNameAndType.Add(typeFullName, type);
+						break;
 					}
-					return type;
 				}
+				return type;
 			}
 		}
 
@@ -72,13 +105,25 @@ namespace Codeer.Friendly.DotNetExecutor
 		public class StringType
 		{
 			/// <summary>
+			/// 変換前の元の型名
+			/// </summary>
+			public string FullNameBack { get; set; }
+
+			/// <summary>
 			/// 型名
 			/// </summary>
 			public string FullName { get; set; }
+
 			/// <summary>
 			/// 型パラメーター情報
 			/// </summary>
 			public List<StringType> GenericTypes { get; set; } = new List<StringType>();
+
+			/// <summary>
+			/// 型を生成
+			/// </summary>
+			/// <param name="core">変換処理</param>
+			/// <returns>型</returns>
 			internal Type MakeType(TypeFinderCore core)
 			{
 				var type = core.GetType(FullName);
@@ -110,11 +155,11 @@ namespace Codeer.Friendly.DotNetExecutor
 				// 普通のタイプ
 				if (genelicCountIndex == -1)
 				{
-					return new StringType { FullName = typeFullName.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)[0] };
+					return new StringType { FullNameBack = typeFullName, FullName = typeFullName.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)[0] };
 				}
 				// ジェネリック
 				var genericTypeStart = typeFullName.IndexOf('[');
-				var genericType = new StringType { FullName = typeFullName.Substring(0, genericTypeStart) };
+				var genericType = new StringType { FullNameBack = typeFullName, FullName = typeFullName.Substring(0, genericTypeStart) };
 				var genericCount = int.Parse(typeFullName.Substring(genelicCountIndex + 1, genericTypeStart - genelicCountIndex - 1));
 				var scope = 0;
 				// 下記例の「System.Int32」の開始位置
