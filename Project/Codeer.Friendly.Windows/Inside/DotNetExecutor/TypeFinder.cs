@@ -18,20 +18,15 @@ namespace Codeer.Friendly.DotNetExecutor
 		/// <returns>型</returns>
 		public Type GetType(string typeFullName)
 		{
-			var type = _core.GetTypeFromCache(typeFullName);
+			var type = _core.GetType(typeFullName);
 			if (type != null) return type;
-			type = _core.GetType(typeFullName);
-			if (type != null)
-			{
-				_core.UpdateCache(typeFullName, type);
-				return type;
-			}
+
 			var stringType = StringType.Parse(typeFullName);
 			if (stringType == null) return null;
 			type = stringType.MakeType(_core);
 			if (type != null)
 			{
-				_core.UpdateCache(typeFullName, type);
+				_core.AddCache(typeFullName, type);
 			}
 			return type;
 		}
@@ -39,22 +34,41 @@ namespace Codeer.Friendly.DotNetExecutor
 		/// <summary>
 		/// 型に関するユーティリティー。
 		/// </summary>
-		internal class TypeFinderCore
+		class TypeFinderCore
 		{
 			Dictionary<string, Type> _fullNameAndType = new Dictionary<string, Type>();
 
-			/// <summary>
-			/// キャッシュから型を取得する
-			/// </summary>
-			/// <param name="typeFullName">タイプフルネーム</param>
-			/// <returns>型</returns>
-			internal Type GetTypeFromCache(string typeFullName)
+			/// <summary>  
+			/// タイプフルネームから型を取得する。
+			/// </summary>  
+			/// <param name="typeFullName">タイプフルネーム。</param>  
+			/// <returns>取得した型。</returns>  
+			internal Type GetType(string typeFullName)
 			{
 				lock (_fullNameAndType)
 				{
+					//キャッシュを見る
 					Type type = null;
-					_fullNameAndType.TryGetValue(typeFullName, out type);
+					if (_fullNameAndType.TryGetValue(typeFullName, out type))
+					{
+						return type;
+					}
 
+					//各アセンブリに問い合わせる			
+					Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+					List<Type> assemblyTypes = new List<Type>();
+					foreach (Assembly assembly in assemblies)
+					{
+						type = assembly.GetType(typeFullName);
+						if (type != null)
+						{
+							break;
+						}
+					}
+					if (type != null)
+					{
+						_fullNameAndType.Add(typeFullName, type);
+					}
 					return type;
 				}
 			}
@@ -64,7 +78,7 @@ namespace Codeer.Friendly.DotNetExecutor
 			/// </summary>
 			/// <param name="typeFullName">タイプフルネーム</param>
 			/// <param name="type">型</param>
-			internal void UpdateCache(string typeFullName, Type type)
+			internal void AddCache(string typeFullName, Type type)
 			{
 				lock (_fullNameAndType)
 				{
@@ -75,49 +89,27 @@ namespace Codeer.Friendly.DotNetExecutor
 					_fullNameAndType[typeFullName] = type;
 				}
 			}
-
-			/// <summary>
-			/// タイプフルネームから型を取得する。
-			/// </summary>
-			/// <param name="typeFullName">タイプフルネーム。</param>
-			/// <returns>取得した型。</returns>
-			internal Type GetType(string typeFullName)
-			{
-				Type type = null;
-				//各アセンブリに問い合わせる			
-				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				List<Type> assemblyTypes = new List<Type>();
-				foreach (Assembly assembly in assemblies)
-				{
-					type = assembly.GetType(typeFullName);
-					if (type != null)
-					{
-						break;
-					}
-				}
-				return type;
-			}
 		}
 
 		/// <summary>
 		/// 解析後の型情報クラス
 		/// </summary>
-		public class StringType
+		class StringType
 		{
 			/// <summary>
 			/// 変換前の元の型名
 			/// </summary>
-			public string FullNameBack { get; set; }
+			internal string FullNameBack { get; set; }
 
 			/// <summary>
 			/// 型名
 			/// </summary>
-			public string FullName { get; set; }
+			internal string FullName { get; set; }
 
 			/// <summary>
 			/// 型パラメーター情報
 			/// </summary>
-			public List<StringType> GenericTypes { get; set; } = new List<StringType>();
+			internal List<StringType> GenericTypes { get; set; } = new List<StringType>();
 
 			/// <summary>
 			/// 型を生成
