@@ -43,6 +43,7 @@ namespace {
 			
 				hProc = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, GetCurrentProcessId());
 				if (!hProc) {
+					::MessageBox(nullptr, L"1", L"", MB_OK);
 					return FALSE;
 				}
 				
@@ -70,6 +71,7 @@ namespace {
 					} else if (hr == S_OK) {
 						errNo = ERR_UNPREDICATABLE_CLR_VERSION;
 						pRuntimeInfo2->Release();
+						::MessageBox(nullptr, L"2", L"", MB_OK);
 						return FALSE;
 					}
 				} else {
@@ -108,14 +110,17 @@ namespace {
 				typedef HRESULT(__stdcall *CorBindToRuntimeExType)(LPCWSTR pwszVersion, LPCWSTR pwszBuildFlavor, DWORD startupFlags, REFCLSID rclsid, REFIID riid, LPVOID FAR *ppv);
 				auto corBindToRuntimeEx = (CorBindToRuntimeExType)GetProcAddress(hMod, "CorBindToRuntimeEx");
 				if (!corBindToRuntimeEx) {
+					::MessageBox(nullptr, L"3", L"", MB_OK);
 					return FALSE;
 				}
 				hr = corBindToRuntimeEx(szVersion, nullptr, 0, CLSID_CLRRuntimeHost, IID_PPV_ARGS(&pClrRuntimeHost));
 				if (FAILED(hr)) {
+					::MessageBox(nullptr, L"4", L"", MB_OK);
 					return FALSE;
 				}
 				hr = pClrRuntimeHost->Start();
 				if (FAILED(hr)) {
+					::MessageBox(nullptr, L"5", L"", MB_OK);
 					return FALSE;
 				}
 				return TRUE;
@@ -127,22 +132,26 @@ namespace {
 				CloseHandle(hProc);
 			}
 			if (!bRuntimeGet) {
+				::MessageBox(nullptr, L"6", L"", MB_OK);
 				return FALSE;
 			}
 
 			BOOL fLoadable;
 			hr = pRuntimeInfo->IsLoadable(&fLoadable);
 			if (FAILED(hr) || !fLoadable) {
+				::MessageBox(nullptr, L"7", L"", MB_OK);
 				return FALSE;
 			}
 
 			hr = pRuntimeInfo->GetInterface(CLSID_CLRRuntimeHost, IID_PPV_ARGS(&pClrRuntimeHost));
 			if (FAILED(hr)) {
+				::MessageBox(nullptr, L"8", L"", MB_OK);
 				return FALSE;
 			}
 
 			hr = pClrRuntimeHost->Start();
 			if (FAILED(hr)) {
+				::MessageBox(nullptr, L"9", L"", MB_OK);
 				return FALSE;
 			}
 			return TRUE;
@@ -175,6 +184,7 @@ namespace {
 	{
 		CLRInterfaces interfaces;
 		if (!interfaces.Init(szVersion, errNo)) {
+			::MessageBox(nullptr, L"10", L"", MB_OK);
 			return FALSE;
 		}
 		
@@ -221,17 +231,20 @@ namespace {
 		//インスタンス生成
 		auto hr = pDomain->CreateInstanceFrom(_bstr_t(szAssemblyPath), _bstr_t(szClass), &data.phObj);
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"11", L"", MB_OK);
 			return FALSE;
 		}
 
 		hr = data.phObj->Unwrap(&data.varObj);
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"12", L"", MB_OK);
 			return FALSE;
 		}
 		data.pVarObj = &data.varObj;
 
 		hr = data.varObj.pdispVal->QueryInterface(IID_PPV_ARGS(&data.pObj));
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"13", L"", MB_OK);
 			return FALSE;
 		}
 
@@ -240,6 +253,7 @@ namespace {
 		VARIANT* pVarArg;
 		hr = SafeArrayAccessData(data.pArgs, reinterpret_cast<void**>(&pVarArg));
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"14", L"", MB_OK);
 			return FALSE;
 		}
 
@@ -248,12 +262,14 @@ namespace {
 
 		hr = SafeArrayUnaccessData(data.pArgs);
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"15", L"", MB_OK);
 			return FALSE;
 		}
 
 		//タイプ取得
 		hr = data.pObj->GetType(&data.pType);
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"16", L"", MB_OK);
 			return FALSE;
 		}
 
@@ -262,6 +278,7 @@ namespace {
 			BindingFlags_InvokeMethod | BindingFlags_Instance | BindingFlags_Public),
 			nullptr, data.varObj, data.pArgs, &ret);
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"17", L"", MB_OK);
 			return FALSE;
 		}
 		return TRUE;
@@ -283,6 +300,7 @@ namespace {
 		CLRInterfaces interfaces;
 		int errNo = 0;
 		if (!interfaces.Init(szVersion, errNo) || !interfaces.pRuntimeInfo) {
+			::MessageBox(nullptr, L"18", L"", MB_OK);
 			return FALSE;
 		}
 
@@ -306,17 +324,20 @@ namespace {
 		//ドメイン列挙
 		auto hr = interfaces.pRuntimeInfo->GetInterface(CLSID_CorRuntimeHost, IID_PPV_ARGS(&data.pCorRuntimeHost));
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"19", L"", MB_OK);
 			return FALSE;
 		}
 
 		hr = data.pCorRuntimeHost->EnumDomains(&data.hEnum);
 		if (FAILED(hr)) {
+			::MessageBox(nullptr, L"20", L"", MB_OK);
 			return FALSE;
 		}
 
 		while (data.pCorRuntimeHost->NextDomain(data.hEnum, &data.pDomainSrc) == S_OK) {
 			hr = data.pDomainSrc->QueryInterface(IID_PPV_ARGS(&data.pDomain));
 			if (FAILED(hr)) {
+				::MessageBox(nullptr, L"21", L"", MB_OK);
 				return FALSE;
 			}
 
@@ -330,6 +351,7 @@ namespace {
 				L"",
 				ret))
 			{
+				::MessageBox(nullptr, L"22", L"", MB_OK);
 				return FALSE;
 			}
 			ids.push_back(ret.intVal);
@@ -344,6 +366,7 @@ namespace {
 					szStartArgs,
 					ret))
 				{
+					::MessageBox(nullptr, L"23", L"", MB_OK);
 					return FALSE;
 				}
 			}
@@ -416,10 +439,13 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 		~Scop(){ ::LeaveCriticalSection(&s_csConnection); }
 	}scope;
 
+	::MessageBox(nullptr, (LPCWSTR)pStartInfo, L"start", MB_OK);
+
 	//引数パース
 	std::vector<std::wstring> vec;
 	SplitArguments((LPCWSTR)pStartInfo, '\t', vec);
 	if (vec.size() != 7) {
+		::MessageBox(nullptr, L"24", L"", MB_OK);
 		return 0;
 	}
 
@@ -475,10 +501,12 @@ BOOL __stdcall InitializeAppDomain(
 	std::vector<std::wstring> vec;
 	SplitArguments((LPCWSTR)pStartInfo, '\t', vec);
 	if (vec.size() != 7) {
+		::MessageBox(nullptr, L"25", L"", MB_OK);
 		return FALSE;
 	}
 	std::vector<int> vecIds;
 	if (!EnumDomainsAndExecute(szVersion, szStepAssembly, szGetIDClass, szGetIDMethod, vecIds, id, szStartClass, szStartMethod, vec[6].c_str())) {
+		::MessageBox(nullptr, L"26", L"", MB_OK);
 		return FALSE;
 	}
 	return TRUE;
