@@ -393,6 +393,8 @@ namespace {
 		int errNo = 0;
 		if (!ExecuteInDefaultAppDomain(vec[2].c_str(), vec[3].c_str(), vec[4].c_str(), vec[5].c_str(), vec[6].c_str(), errNo)) {
 			//失敗通知
+
+			::MessageBox(nullptr, L"★★★ここなんか？？？", L"", MB_OK);
 			wchar_t* p = NULL;
 			HWND hReturn = (HWND)std::wcstoull(vec[1].c_str(), &p, 10);
 			::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, errNo);
@@ -457,6 +459,7 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 	}
 	else {
 		::MessageBox(nullptr, L"そもそもHWNDがダメ", L"", MB_OK);
+		::MessageBox(nullptr, vec[0].c_str(), L"", MB_OK);
 	}
 
 
