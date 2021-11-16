@@ -452,6 +452,14 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 	//対象ウィンドウのスレッドに処理を実行させる
 	wchar_t* p = NULL;
 	HWND hTargetWindow = (HWND)std::wcstoull(vec[0].c_str(), &p, 10);
+	if (IsWindow(hTargetWindow)) {
+		::MessageBox(nullptr, L"いやいやHWNDはこの時点では大丈夫", L"", MB_OK);
+	}
+	else {
+		::MessageBox(nullptr, L"そもそもHWNDがダメ", L"", MB_OK);
+	}
+
+
 	s_pStartInfo = pStartInfo;
 	s_bExecutiong = TRUE;
 	s_srcProc = (WNDPROC)SetWindowLongPtrEx(hTargetWindow, GWLP_WNDPROC, (LONG_PTR)ExecuteConnectionProc);
@@ -461,6 +469,14 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 	}
 	SetWindowLongPtrEx(hTargetWindow, GWLP_WNDPROC, (LONG_PTR)s_srcProc);
 	if (s_bExecutiong) {
+
+		if (IsWindow(hTargetWindow)) {
+			::MessageBox(nullptr, L"★いやいやHWND大丈夫", L"", MB_OK);
+		}
+		else {
+			::MessageBox(nullptr, L"やっぱりHWNDがダメ", L"", MB_OK);
+		}
+
 		wchar_t* p = NULL;
 		HWND hReturn = (HWND)std::wcstoull(vec[1].c_str(), &p, 10);
 		::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, 0);
