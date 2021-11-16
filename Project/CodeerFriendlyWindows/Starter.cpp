@@ -464,6 +464,7 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 		wchar_t* p = NULL;
 		HWND hReturn = (HWND)std::wcstoull(vec[1].c_str(), &p, 10);
 		::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, 0);
+		::MessageBox(nullptr, L"25", L"", MB_OK);
 	}
 	return 0;
 }
