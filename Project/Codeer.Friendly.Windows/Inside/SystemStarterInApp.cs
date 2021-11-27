@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Codeer.Friendly.Windows.Inside
 {
@@ -25,6 +27,10 @@ namespace Codeer.Friendly.Windows.Inside
         /// <param name="startInfo">開始情報。</param>
         public static int Start(string startInfo)
         {
+            File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\nSystemStarterInApp.Start", Encoding.GetEncoding("shift_jis"));
+
+
+
             startInfo = Debug.ReadDebugMark(startInfo);
             Debug.Trace("Start in App.");
 
@@ -47,7 +53,8 @@ namespace Codeer.Friendly.Windows.Inside
 			//コントロールスレッド終了管理スレッド
             //システムに負荷をかけない程度で端末プロセス、コントローススレッド、メインスレッドを監視する
 			new Thread((ThreadStart)delegate
-			{
+            {
+                File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\nStart waiting thread.", Encoding.GetEncoding("shift_jis"));
                 Debug.Trace("Start waiting thread.");
 
                 //コントロールウィンドウのハンドル格納用
@@ -91,6 +98,7 @@ namespace Codeer.Friendly.Windows.Inside
                     Thread.Sleep(10);
 				}
 
+                File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\nControl Window Created.", Encoding.GetEncoding("shift_jis"));
                 Debug.Trace("Control Window Created.");
 
                 //対象プロセスのIDを取得
@@ -103,6 +111,8 @@ namespace Codeer.Friendly.Windows.Inside
                 //終了待ち
                 EventHandler appExit = new EventHandler(delegate { NativeMethods.PostMessage(controlWindowHandle, NativeMethods.WM_QUIT, IntPtr.Zero, IntPtr.Zero); });
                 Application.ApplicationExit += appExit;
+
+                File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\nSuccess in App.", Encoding.GetEncoding("shift_jis"));
                 Debug.Trace("Success in App.");
                 var windowProcess = GetProcessById(windowProcessId);
                 bool isDifferentPermissions = false;

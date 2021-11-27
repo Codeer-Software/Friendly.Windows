@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <fstream>
 #pragma comment(lib, "mscoree.lib")
 #import "mscorlib.tlb" raw_interfaces_only \
 	high_property_prefixes("_get", "_put", "_putref") \
@@ -11,6 +12,22 @@
 using namespace mscorlib;
 
 namespace {
+
+	void WriteLog(LPCWSTR msg)
+	{
+		std::wstring filename = L"c:\\FriendlyLog\\log.txt";
+		std::wofstream writing_file;
+		writing_file.imbue(std::locale("Japanese", LC_COLLATE));
+		writing_file.imbue(std::locale("Japanese", LC_CTYPE));
+		writing_file.open(filename, std::ios_base::app | std::ios_base::in);
+		writing_file << msg << std::endl;
+		writing_file.close();
+	}
+
+
+
+
+
 	
 	const int ERR_UNPREDICATABLE_CLR_VERSION = 1;
 	const int WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE = 0x8100;
@@ -43,7 +60,7 @@ namespace {
 			
 				hProc = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, GetCurrentProcessId());
 				if (!hProc) {
-					::MessageBox(nullptr, L"1", L"", MB_OK);
+					WriteLog(L"1");
 					return FALSE;
 				}
 				
@@ -71,7 +88,7 @@ namespace {
 					} else if (hr == S_OK) {
 						errNo = ERR_UNPREDICATABLE_CLR_VERSION;
 						pRuntimeInfo2->Release();
-						::MessageBox(nullptr, L"2", L"", MB_OK);
+						WriteLog(L"2");
 						return FALSE;
 					}
 				} else {
@@ -110,17 +127,17 @@ namespace {
 				typedef HRESULT(__stdcall *CorBindToRuntimeExType)(LPCWSTR pwszVersion, LPCWSTR pwszBuildFlavor, DWORD startupFlags, REFCLSID rclsid, REFIID riid, LPVOID FAR *ppv);
 				auto corBindToRuntimeEx = (CorBindToRuntimeExType)GetProcAddress(hMod, "CorBindToRuntimeEx");
 				if (!corBindToRuntimeEx) {
-					::MessageBox(nullptr, L"3", L"", MB_OK);
+					WriteLog(L"3");
 					return FALSE;
 				}
 				hr = corBindToRuntimeEx(szVersion, nullptr, 0, CLSID_CLRRuntimeHost, IID_PPV_ARGS(&pClrRuntimeHost));
 				if (FAILED(hr)) {
-					::MessageBox(nullptr, L"4", L"", MB_OK);
+					WriteLog(L"4");
 					return FALSE;
 				}
 				hr = pClrRuntimeHost->Start();
 				if (FAILED(hr)) {
-					::MessageBox(nullptr, L"5", L"", MB_OK);
+					WriteLog(L"5");
 					return FALSE;
 				}
 				return TRUE;
@@ -132,26 +149,26 @@ namespace {
 				CloseHandle(hProc);
 			}
 			if (!bRuntimeGet) {
-				::MessageBox(nullptr, L"6", L"", MB_OK);
+				WriteLog(L"6");
 				return FALSE;
 			}
 
 			BOOL fLoadable;
 			hr = pRuntimeInfo->IsLoadable(&fLoadable);
 			if (FAILED(hr) || !fLoadable) {
-				::MessageBox(nullptr, L"7", L"", MB_OK);
+				WriteLog(L"7");
 				return FALSE;
 			}
 
 			hr = pRuntimeInfo->GetInterface(CLSID_CLRRuntimeHost, IID_PPV_ARGS(&pClrRuntimeHost));
 			if (FAILED(hr)) {
-				::MessageBox(nullptr, L"8", L"", MB_OK);
+				WriteLog(L"8");
 				return FALSE;
 			}
 
 			hr = pClrRuntimeHost->Start();
 			if (FAILED(hr)) {
-				::MessageBox(nullptr, L"9", L"", MB_OK);
+				WriteLog(L"9");
 				return FALSE;
 			}
 			return TRUE;
@@ -184,7 +201,7 @@ namespace {
 	{
 		CLRInterfaces interfaces;
 		if (!interfaces.Init(szVersion, errNo)) {
-			::MessageBox(nullptr, L"10", L"", MB_OK);
+			WriteLog(L"10");
 			return FALSE;
 		}
 		
@@ -195,7 +212,13 @@ namespace {
 			szMethod,
 			szArgs,
 			&dwResult);
-		return !FAILED(hr);
+		auto ret = !FAILED(hr);
+		if (!ret)
+		{
+			auto msg = std::wstring(L"ExecuteInDefaultAppDomainの戻り値") + std::to_wstring(ret);
+			WriteLog(msg.c_str());
+		}
+		return ret;
 	}
 
 	//指定のドメインでインスタンスを生成して、そのメソッドを呼び出し
@@ -231,20 +254,20 @@ namespace {
 		//インスタンス生成
 		auto hr = pDomain->CreateInstanceFrom(_bstr_t(szAssemblyPath), _bstr_t(szClass), &data.phObj);
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"11", L"", MB_OK);
+			WriteLog(L"11");
 			return FALSE;
 		}
 
 		hr = data.phObj->Unwrap(&data.varObj);
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"12", L"", MB_OK);
+			WriteLog(L"12");
 			return FALSE;
 		}
 		data.pVarObj = &data.varObj;
 
 		hr = data.varObj.pdispVal->QueryInterface(IID_PPV_ARGS(&data.pObj));
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"13", L"", MB_OK);
+			WriteLog(L"13");
 			return FALSE;
 		}
 
@@ -253,7 +276,7 @@ namespace {
 		VARIANT* pVarArg;
 		hr = SafeArrayAccessData(data.pArgs, reinterpret_cast<void**>(&pVarArg));
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"14", L"", MB_OK);
+			WriteLog(L"14");
 			return FALSE;
 		}
 
@@ -262,14 +285,14 @@ namespace {
 
 		hr = SafeArrayUnaccessData(data.pArgs);
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"15", L"", MB_OK);
+			WriteLog(L"15");
 			return FALSE;
 		}
 
 		//タイプ取得
 		hr = data.pObj->GetType(&data.pType);
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"16", L"", MB_OK);
+			WriteLog(L"16");
 			return FALSE;
 		}
 
@@ -278,7 +301,7 @@ namespace {
 			BindingFlags_InvokeMethod | BindingFlags_Instance | BindingFlags_Public),
 			nullptr, data.varObj, data.pArgs, &ret);
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"17", L"", MB_OK);
+			WriteLog(L"17");
 			return FALSE;
 		}
 		return TRUE;
@@ -300,7 +323,7 @@ namespace {
 		CLRInterfaces interfaces;
 		int errNo = 0;
 		if (!interfaces.Init(szVersion, errNo) || !interfaces.pRuntimeInfo) {
-			::MessageBox(nullptr, L"18", L"", MB_OK);
+			WriteLog(L"18");
 			return FALSE;
 		}
 
@@ -324,20 +347,20 @@ namespace {
 		//ドメイン列挙
 		auto hr = interfaces.pRuntimeInfo->GetInterface(CLSID_CorRuntimeHost, IID_PPV_ARGS(&data.pCorRuntimeHost));
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"19", L"", MB_OK);
+			WriteLog(L"19");
 			return FALSE;
 		}
 
 		hr = data.pCorRuntimeHost->EnumDomains(&data.hEnum);
 		if (FAILED(hr)) {
-			::MessageBox(nullptr, L"20", L"", MB_OK);
+			WriteLog(L"20");
 			return FALSE;
 		}
 
 		while (data.pCorRuntimeHost->NextDomain(data.hEnum, &data.pDomainSrc) == S_OK) {
 			hr = data.pDomainSrc->QueryInterface(IID_PPV_ARGS(&data.pDomain));
 			if (FAILED(hr)) {
-				::MessageBox(nullptr, L"21", L"", MB_OK);
+				WriteLog(L"21");
 				return FALSE;
 			}
 
@@ -351,7 +374,7 @@ namespace {
 				L"",
 				ret))
 			{
-				::MessageBox(nullptr, L"22", L"", MB_OK);
+				WriteLog(L"22");
 				return FALSE;
 			}
 			ids.push_back(ret.intVal);
@@ -366,7 +389,7 @@ namespace {
 					szStartArgs,
 					ret))
 				{
-					::MessageBox(nullptr, L"23", L"", MB_OK);
+					WriteLog(L"23");
 					return FALSE;
 				}
 			}
@@ -394,7 +417,7 @@ namespace {
 		if (!ExecuteInDefaultAppDomain(vec[2].c_str(), vec[3].c_str(), vec[4].c_str(), vec[5].c_str(), vec[6].c_str(), errNo)) {
 			//失敗通知
 
-			::MessageBox(nullptr, L"★★★ここなんか？？？", L"", MB_OK);
+			WriteLog(L"★★★ここなんか？？？");
 			wchar_t* p = NULL;
 			HWND hReturn = (HWND)std::wcstoull(vec[1].c_str(), &p, 10);
 			::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, errNo);
@@ -441,13 +464,13 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 		~Scop(){ ::LeaveCriticalSection(&s_csConnection); }
 	}scope;
 
-	::MessageBox(nullptr, (LPCWSTR)pStartInfo, L"start", MB_OK);
+	WriteLog((LPCWSTR)pStartInfo);
 
 	//引数パース
 	std::vector<std::wstring> vec;
 	SplitArguments((LPCWSTR)pStartInfo, '\t', vec);
 	if (vec.size() != 7) {
-		::MessageBox(nullptr, L"24", L"", MB_OK);
+		WriteLog(L"24");
 		return 0;
 	}
 
@@ -455,11 +478,11 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 	wchar_t* p = NULL;
 	HWND hTargetWindow = (HWND)std::wcstoull(vec[0].c_str(), &p, 10);
 	if (IsWindow(hTargetWindow)) {
-		::MessageBox(nullptr, L"いやいやHWNDはこの時点では大丈夫", L"", MB_OK);
+		WriteLog(L"いやいやHWNDはこの時点では大丈夫");
 	}
 	else {
-		::MessageBox(nullptr, L"そもそもHWNDがダメ", L"", MB_OK);
-		::MessageBox(nullptr, vec[0].c_str(), L"", MB_OK);
+		WriteLog(L"そもそもHWNDがダメ");
+		WriteLog(vec[0].c_str());
 	}
 
 
@@ -474,16 +497,16 @@ DWORD __stdcall InitializeFriendly(void* pStartInfo)
 	if (s_bExecutiong) {
 
 		if (IsWindow(hTargetWindow)) {
-			::MessageBox(nullptr, L"★いやいやHWND大丈夫", L"", MB_OK);
+			WriteLog(L"★いやいやHWND大丈夫");
 		}
 		else {
-			::MessageBox(nullptr, L"やっぱりHWNDがダメ", L"", MB_OK);
+			WriteLog(L"やっぱりHWNDがダメ");
 		}
 
 		wchar_t* p = NULL;
 		HWND hReturn = (HWND)std::wcstoull(vec[1].c_str(), &p, 10);
 		::SendMessage(hReturn, WM_NOTIFY_SYSTEM_CONTROL_WINDOW_HANDLE, 0, 0);
-		::MessageBox(nullptr, L"25", L"", MB_OK);
+		WriteLog(L"25");
 	}
 	return 0;
 }
@@ -521,12 +544,12 @@ BOOL __stdcall InitializeAppDomain(
 	std::vector<std::wstring> vec;
 	SplitArguments((LPCWSTR)pStartInfo, '\t', vec);
 	if (vec.size() != 7) {
-		::MessageBox(nullptr, L"25", L"", MB_OK);
+		WriteLog(L"25");
 		return FALSE;
 	}
 	std::vector<int> vecIds;
 	if (!EnumDomainsAndExecute(szVersion, szStepAssembly, szGetIDClass, szGetIDMethod, vecIds, id, szStartClass, szStartMethod, vec[6].c_str())) {
-		::MessageBox(nullptr, L"26", L"", MB_OK);
+		WriteLog(L"26");
 		return FALSE;
 	}
 	return TRUE;

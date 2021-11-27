@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -69,6 +70,9 @@ namespace LogTest
 
         private void _buttonAttach_Click(object sender, EventArgs e)
         {
+            Directory.CreateDirectory(@"c:\FriendlyLog");
+            File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\n\r\n---------" + DateTime.Now + "---------\r\n", Encoding.GetEncoding("shift_jis"));
+
             Process process = null;
             try
             {
@@ -86,11 +90,15 @@ namespace LogTest
                 try
                 {
                     using (var app = new WindowsAppFriend(process)) { }
+
+                    File.AppendAllText(@"c:\FriendlyLog\log.txt", b.ToString() + "\r\n成功", Encoding.GetEncoding("shift_jis"));
+
                     MessageBox.Show(b.ToString() + "\r\n成功");
                     break;
                 }
                 catch (Exception exp)
                 {
+                    File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\n" + b.ToString() + "\r\n" + exp.Message, Encoding.GetEncoding("shift_jis"));
                     MessageBox.Show(b.ToString() + "\r\n" + exp.Message);
                 }
             }
