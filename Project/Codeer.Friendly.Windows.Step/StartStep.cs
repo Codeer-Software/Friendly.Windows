@@ -16,7 +16,7 @@ namespace Codeer.Friendly.Windows.Step
         /// <param name="startInfo">開始情報。</param>
         public static int Start(string startInfo)
         {
-            File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\nStartStep.Start", Encoding.GetEncoding("shift_jis"));
+            File.AppendAllText(@"c:\FriendlyLog\log.txt", "\r\nStartStep.Start : " + startInfo, Encoding.GetEncoding("shift_jis"));
 
             try
             {

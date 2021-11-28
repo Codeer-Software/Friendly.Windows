@@ -51,7 +51,7 @@ namespace Codeer.Friendly.Windows.Inside
             {
                 string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                             "Codeer.Friendly");
-                string dllName = "Codeer.Friendly.Windows.Step" + "_2000" + ".dll";
+                string dllName = "Codeer.Friendly.Windows.Step" + "_2001" + ".dll";
                 string dllPath = Path.Combine(dir, dllName);
                 return dllPath;
             }
