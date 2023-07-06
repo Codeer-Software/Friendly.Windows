@@ -1,4 +1,4 @@
 rd /s /q "../ReleaseBinary"
-"%DevEnvDir%devenv.exe" "../Codeer.Friendly.Windows/Codeer.Friendly.Windows.sln" /rebuild Release
-"%DevEnvDir%devenv.exe" "../Codeer.Friendly.Windows/Codeer.Friendly.Windows.sln" /rebuild Release-Eng
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe" "../Codeer.Friendly.Windows/Codeer.Friendly.Windows.sln" /rebuild Release
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe" "../Codeer.Friendly.Windows/Codeer.Friendly.Windows.sln" /rebuild Release-Eng
 nuget pack friendly.windows.nuspec
