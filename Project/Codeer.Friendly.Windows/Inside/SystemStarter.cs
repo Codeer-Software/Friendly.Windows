@@ -191,6 +191,7 @@ namespace Codeer.Friendly.Windows.Inside
             //最初にロードさせるアセンブリとstartupInfoCore
             string szArgs = typeof(AppVar).Assembly.FullName + "|" + typeof(AppVar).Assembly.Location + "||" +
                             typeof(SystemStarter).Assembly.FullName + "|" + typeof(SystemStarter).Assembly.Location + "||" +
+                            SerializeUtility.GetRequiredAssembliesStartupInfo() +
                             typeof(SystemStarterInApp).FullName + "||" +
                             "Start" + "||" +
                             startupInfoCore;

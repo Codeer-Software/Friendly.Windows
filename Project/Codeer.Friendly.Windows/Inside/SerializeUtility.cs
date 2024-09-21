@@ -1,27 +1,69 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Codeer.Friendly.Windows.Inside
 {
     class SerializeUtility
     {
-        internal static byte[] Serialize(object obj)
+        static ICustomSerializer _serializer = new DefaultSerializer();
+        static SerializeUtility()
         {
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream())
+            //さすがに重いか、面倒やけどおくるかな・・・、まあ一旦これで
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                formatter.Serialize(stream, obj);
-                return stream.ToArray();
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (typeof(ICustomSerializer).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract && type != typeof(DefaultSerializer))
+                    {
+                        _serializer = (ICustomSerializer)Activator.CreateInstance(type);
+                        break;
+                    }
+                }
             }
         }
 
-        internal static object Deserialize(byte[] bin)
+        internal static byte[] Serialize(object obj)=> _serializer.Serialize(obj);
+        
+        internal static object Deserialize(byte[] bin) => _serializer.Deserialize(bin);
+
+        internal static string GetRequiredAssembliesStartupInfo()
         {
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream(bin))
+            var list = new List<string>();
+            foreach (var assembly in _serializer.GetRequiredAssemblies())
             {
-                return formatter.Deserialize(stream);
+                list.Add(assembly.FullName + "|" + assembly.Location);
             }
+            if (list.Count == 0) return string.Empty;
+
+            return string.Join("||", list.ToArray()) + "||";
+        }
+
+        class DefaultSerializer : ICustomSerializer
+        {
+
+            public byte[] Serialize(object obj)
+            {
+                var formatter = new BinaryFormatter();
+                using (var stream = new MemoryStream())
+                {
+                    formatter.Serialize(stream, obj);
+                    return stream.ToArray();
+                }
+            }
+
+            public object Deserialize(byte[] bin)
+            {
+                var formatter = new BinaryFormatter();
+                using (var stream = new MemoryStream(bin))
+                {
+                    return formatter.Deserialize(stream);
+                }
+            }
+
+            public Assembly[] GetRequiredAssemblies() => new Assembly[0];
         }
     }
 }

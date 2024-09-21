@@ -9,30 +9,32 @@ namespace Codeer.Friendly.Windows.Inside.CopyDataProtocol
 	/// 通信データ。
 	/// </summary>
 	[Serializable]
-	class CopyDataProtocolInfo
+	public class CopyDataProtocolInfo
 	{
-		IntPtr _returnWindowHandle;
-		object _data;
+        /// <summary>
+        /// 返信ウィンドウハンドル。
+        /// </summary>
+        public IntPtr ReturnWindowHandle { get; set; }
 
-		/// <summary>
-		/// 返信ウィンドウハンドル。
-		/// </summary>
-		internal IntPtr ReturnWindowHandle { get { return _returnWindowHandle; } }
+        /// <summary>
+        /// データ。
+        /// </summary>
+        public object Data { get; set; }
 
-		/// <summary>
-		/// データ。
-		/// </summary>
-		internal object Data { get { return _data; } }
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public CopyDataProtocolInfo() { }
 
-		/// <summary>
-		/// コンストラクタ。
-		/// </summary>
-		/// <param name="returnWindowHandle">返信ウィンドウ。</param>
-		/// <param name="data">データ。</param>
-		internal CopyDataProtocolInfo(IntPtr returnWindowHandle, object data)
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        /// <param name="returnWindowHandle">返信ウィンドウ。</param>
+        /// <param name="data">データ。</param>
+        internal CopyDataProtocolInfo(IntPtr returnWindowHandle, object data)
 		{
-			_returnWindowHandle = returnWindowHandle;
-			_data = data;
+			ReturnWindowHandle = returnWindowHandle;
+			Data = data;
 		}
 
         /// <summary>

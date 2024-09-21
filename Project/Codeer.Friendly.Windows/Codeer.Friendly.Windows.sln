@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29102.190
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codeer.Friendly.Windows", "Codeer.Friendly.Windows.csproj", "{56A947B0-1DF8-4116-8152-AB2D4B6042C3}"
 EndProject
@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{07819EDF
 	ProjectSection(SolutionItems) = preProject
 		..\Nuget\Friendly.Windows.nuspec = ..\Nuget\Friendly.Windows.nuspec
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestCore", "..\UnitTestCore\UnitTestCore.csproj", "{5A5E304F-479D-4E3F-82E3-04550290A043}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,12 @@ Global
 		{8E93CC5B-87D1-453F-96F6-57680DAB7A92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E93CC5B-87D1-453F-96F6-57680DAB7A92}.Release-Eng|Any CPU.ActiveCfg = Release|Any CPU
 		{8E93CC5B-87D1-453F-96F6-57680DAB7A92}.Release-Eng|Any CPU.Build.0 = Release|Any CPU
+		{5A5E304F-479D-4E3F-82E3-04550290A043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5E304F-479D-4E3F-82E3-04550290A043}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5E304F-479D-4E3F-82E3-04550290A043}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5E304F-479D-4E3F-82E3-04550290A043}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A5E304F-479D-4E3F-82E3-04550290A043}.Release-Eng|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5E304F-479D-4E3F-82E3-04550290A043}.Release-Eng|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
