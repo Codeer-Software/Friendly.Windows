@@ -55,9 +55,8 @@ namespace UnitTestCore
 
     public class Tests
     {
-        // WindowsAppFriend _app;
+        WindowsAppFriend _app;
 
-        /*
         [SetUp]
         public void Setup()
         {
@@ -72,12 +71,12 @@ namespace UnitTestCore
             _app.Dispose();
             Process.GetProcessById(_app.ProcessId).Kill();
         }
-        */
+        
         [Test]
         public void Test1()
         {
-            var targetApp = Process.GetProcessesByName("TestTargetCore8").First();
-            var _app = new WindowsAppFriend(targetApp);
+            //var targetApp = Process.GetProcessesByName("TestTargetCore8").First();
+            //var _app = new WindowsAppFriend(targetApp);
             int c = _app.Type<Application>().OpenForms.Count;
 
         }

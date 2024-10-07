@@ -8,7 +8,7 @@ namespace Codeer.Friendly.Windows.Inside
 {
     class SerializeUtility
     {
-        static ICustomSerializer _serializer = new DefaultSerializer();
+        internal static ICustomSerializer Serializer { get; set; } = new DefaultSerializer();
         static SerializeUtility()
         {
             //さすがに重いか、面倒やけどおくるかな・・・、まあ一旦これで
@@ -18,21 +18,21 @@ namespace Codeer.Friendly.Windows.Inside
                 {
                     if (typeof(ICustomSerializer).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract && type != typeof(DefaultSerializer))
                     {
-                        _serializer = (ICustomSerializer)Activator.CreateInstance(type);
+                        Serializer = (ICustomSerializer)Activator.CreateInstance(type);
                         break;
                     }
                 }
             }
         }
 
-        internal static byte[] Serialize(object obj)=> _serializer.Serialize(obj);
+        internal static byte[] Serialize(object obj)=> Serializer.Serialize(obj);
         
-        internal static object Deserialize(byte[] bin) => _serializer.Deserialize(bin);
+        internal static object Deserialize(byte[] bin) => Serializer.Deserialize(bin);
 
         internal static string GetRequiredAssembliesStartupInfo()
         {
             var list = new List<string>();
-            foreach (var assembly in _serializer.GetRequiredAssemblies())
+            foreach (var assembly in Serializer.GetRequiredAssemblies())
             {
                 list.Add(assembly.FullName + "|" + assembly.Location);
             }

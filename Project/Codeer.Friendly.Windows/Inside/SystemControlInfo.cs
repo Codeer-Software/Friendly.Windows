@@ -6,31 +6,33 @@ namespace Codeer.Friendly.Windows.Inside
 	/// システムコントロール情報。
 	/// </summary>
 	[Serializable]
-	class SystemControlInfo
+    public class SystemControlInfo
 	{
-		SystemControlType _systemControlType;
-		object _data;
+        /// <summary>
+        /// コントロールタイプ。
+        /// </summary>
+        public SystemControlType SystemControlType { get; set; }
 
-		/// <summary>
-		/// コントロールタイプ。
-		/// </summary>
-		internal SystemControlType SystemControlType { get { return _systemControlType; } }
-		
-		/// <summary>
-		/// データ。
-		/// コントロールタイプによって異なる。
-		/// </summary>
-		internal object Data { get { return _data; } }
+        /// <summary>
+        /// データ。
+        /// コントロールタイプによって異なる。
+        /// </summary>
+        public object Data { get; set; }
 
-		/// <summary>
-		/// コンストラクタ。
-		/// </summary>
-		/// <param name="systemControlType">コントロールタイプ。</param>
-		/// <param name="data">データ。</param>
-		internal SystemControlInfo(SystemControlType systemControlType, object data)
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public SystemControlInfo() { }
+
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        /// <param name="systemControlType">コントロールタイプ。</param>
+        /// <param name="data">データ。</param>
+        public SystemControlInfo(SystemControlType systemControlType, object data)
 		{
-			_systemControlType = systemControlType;
-			_data = data;
+			SystemControlType = systemControlType;
+			Data = data;
 		}
 	}
 }
