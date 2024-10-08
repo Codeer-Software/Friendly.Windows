@@ -72,8 +72,6 @@ namespace UnitTestCore
         [Test]
         public void Test1()
         {
-            //var targetApp = Process.GetProcessesByName("TestTargetCore8").First();
-            //var _app = new WindowsAppFriend(targetApp);
             int count = _app.Type<Application>().OpenForms.Count;
             var form = _app.Type<Application>().OpenForms[0];
             string result = form.Test(1, "abc", form);
