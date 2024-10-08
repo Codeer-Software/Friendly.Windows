@@ -26,6 +26,7 @@ namespace Codeer.Friendly.Windows
 	{
         /// <summary>
         /// Set ICustomSerializer.
+        /// It must be a public class.
         /// </summary>
         /// <typeparam name="T">Class that implements ICustomSerializer.</typeparam>
         public static void SetCustomSerializer<T>() where T : ICustomSerializer, new()
