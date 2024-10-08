@@ -30,7 +30,6 @@ namespace UnitTestCore
 
     public class CustomSerializer : ICustomSerializer
     {
-
         MessagePackSerializerOptions customOptions = MessagePackSerializerOptions
             .Standard
             .WithResolver(
@@ -40,11 +39,8 @@ namespace UnitTestCore
                 )
             );
 
-
-        public object Deserialize(byte[] bin)
-#pragma warning disable CS8603 // Null 参照戻り値である可能性があります。
+        public object? Deserialize(byte[] bin)
             => MessagePackSerializer.Typeless.Deserialize(bin, customOptions);
-#pragma warning restore CS8603 // Null 参照戻り値である可能性があります。
 
         public Assembly[] GetRequiredAssemblies() => [GetType().Assembly, typeof(MessagePackSerializer).Assembly];
 
@@ -62,6 +58,7 @@ namespace UnitTestCore
         {
             var targetExePath = Path.GetFullPath(GetType().Assembly.Location + @"..\..\..\..\..\..\TestTargetCore8\TestTargetCore8\bin\Debug\net8.0-windows\TestTargetCore8.exe");
             var targetApp = Process.Start(targetExePath);
+            WindowsAppFriend.SetCustomSerializer<CustomSerializer>();
             _app = new WindowsAppFriend(targetApp);
         }
 
@@ -77,8 +74,10 @@ namespace UnitTestCore
         {
             //var targetApp = Process.GetProcessesByName("TestTargetCore8").First();
             //var _app = new WindowsAppFriend(targetApp);
-            int c = _app.Type<Application>().OpenForms.Count;
-
+            int count = _app.Type<Application>().OpenForms.Count;
+            var form = _app.Type<Application>().OpenForms[0];
+            string result = form.Test(1, "abc", form);
+            Assert.That(result, Is.EqualTo("1abcTestTargetCore8.Form1, Text: Form1"));
         }
 
         [Test]

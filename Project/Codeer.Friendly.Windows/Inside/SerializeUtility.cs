@@ -40,30 +40,5 @@ namespace Codeer.Friendly.Windows.Inside
 
             return string.Join("||", list.ToArray()) + "||";
         }
-
-        class DefaultSerializer : ICustomSerializer
-        {
-
-            public byte[] Serialize(object obj)
-            {
-                var formatter = new BinaryFormatter();
-                using (var stream = new MemoryStream())
-                {
-                    formatter.Serialize(stream, obj);
-                    return stream.ToArray();
-                }
-            }
-
-            public object Deserialize(byte[] bin)
-            {
-                var formatter = new BinaryFormatter();
-                using (var stream = new MemoryStream(bin))
-                {
-                    return formatter.Deserialize(stream);
-                }
-            }
-
-            public Assembly[] GetRequiredAssemblies() => new Assembly[0];
-        }
     }
 }

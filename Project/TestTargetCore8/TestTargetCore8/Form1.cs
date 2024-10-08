@@ -6,5 +6,7 @@ namespace TestTargetCore8
         {
             InitializeComponent();
         }
+
+        string Test(int a, string b, Form x) => "" + a + b + x;
     }
 }
