@@ -8,7 +8,6 @@ namespace Codeer.Friendly.Windows.Inside
     /// <summary>
     /// システム制御。
     /// </summary>
-    [Serializable]
     class SystemController
     {
         internal IntPtr SystemControlWindowInAppHandle { get; }

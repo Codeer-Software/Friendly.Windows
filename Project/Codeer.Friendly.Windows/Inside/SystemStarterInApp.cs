@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Collections.Generic;
+using Codeer.Friendly.DotNetExecutor;
 
 namespace Codeer.Friendly.Windows.Inside
 {
@@ -28,8 +29,11 @@ namespace Codeer.Friendly.Windows.Inside
             startInfo = Debug.ReadDebugMark(startInfo);
             Debug.Trace("Start in App.");
 
+            var sp = startInfo.Split(',');
+            SerializeUtility.Serializer = Activator.CreateInstance(new TypeFinder().GetType(sp[1])) as ICustomSerializer;
+
             //端末でアプリケーションコントロールウィンドウのハンドルを待っているウィンドウのハンドル
-            IntPtr terminalWindow = new IntPtr(long.Parse(startInfo, CultureInfo.CurrentCulture));
+            IntPtr terminalWindow = new IntPtr(long.Parse(sp[0], CultureInfo.CurrentCulture));
             Thread t = new Thread((ThreadStart)delegate
             {
                 StartCore(terminalWindow);

@@ -181,7 +181,8 @@ namespace Codeer.Friendly.Windows.Inside
         private static string CreateStartupInfo(string clrVersion, string szAssemblyStep, IntPtr recieveWindowHandle, IntPtr initializeThreadWindowHandle)
         {
             //通信用ウィンドウハンドルとデバッグマーク
-            string startupInfoCore = recieveWindowHandle.ToInt64().ToString(CultureInfo.CurrentCulture) + Debug.DebugMark;
+            string startupInfoCore = recieveWindowHandle.ToInt64().ToString(CultureInfo.CurrentCulture) + ","
+                + SerializeUtility.Serializer.GetType().FullName + Debug.DebugMark;
 
             //実行メソッドの情報
             string szTypeFullName = "Codeer.Friendly.Windows.Step.StartStep";
@@ -191,6 +192,7 @@ namespace Codeer.Friendly.Windows.Inside
             //最初にロードさせるアセンブリとstartupInfoCore
             string szArgs = typeof(AppVar).Assembly.FullName + "|" + typeof(AppVar).Assembly.Location + "||" +
                             typeof(SystemStarter).Assembly.FullName + "|" + typeof(SystemStarter).Assembly.Location + "||" +
+                            SerializeUtility.GetRequiredAssembliesStartupInfo() +
                             typeof(SystemStarterInApp).FullName + "||" +
                             "Start" + "||" +
                             startupInfoCore;

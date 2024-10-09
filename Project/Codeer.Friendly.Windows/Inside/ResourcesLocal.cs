@@ -7,36 +7,139 @@ namespace Codeer.Friendly.Windows.Inside
     /// ローカライズ済みリソース。
     /// </summary>
     [Serializable]
-    class ResourcesLocal
+    public class ResourcesLocal
     {
         static internal ResourcesLocal Instance;
 
-        internal string ErrorAppCommunication;
-        internal string ErrorAppConnection;
-        internal string ErrorArgumentInvokeFormat;
-        internal string ErrorArgumentInvokeFormatForObjectArray;
-        internal string ErrorBinaryInstall;
-        internal string ErrorDllLoad;
-        internal string ErrorExecuteThreadWindowHandle;
-        internal string ErrorFriendlySystem;
-        internal string ErrorInvalidThreadCall;
-        internal string ErrorManyFoundConstractorFormat;
-        internal string ErrorManyFoundInvokeFormat;
-        internal string ErrorNotFoundConstractorFormat;
-        internal string ErrorNotFoundConstractorFormatForObjectArray;
-        internal string ErrorNotFoundInvokeFormat;
-        internal string ErrorOperationTypeArgInfoFormat;
-        internal string ErrorOperationTypeArgInfoForObjectArrayFormat;
-        internal string ErrorProcessAcess;
-        internal string ErrorProcessOperation;
-        internal string ErrorTargetCpuDifference;
-        internal string ErrorUnpredicatableClrVersion;
-        internal string HasNotEnumerable;
-        internal string NullObjectOperation;
-        internal string OutOfCommunicationNo;
-        internal string OutOfMemory;
-        internal string UnknownTypeInfoFormat;
-        internal string ErrorAttachOtherDomainsNeedNet4;
+        /// <summary>
+        /// ErrorAppCommunication
+        /// </summary>
+        public string ErrorAppCommunication { get; set; }
+
+        /// <summary>
+        /// ErrorAppConnection
+        /// </summary>
+        public string ErrorAppConnection { get; set; }
+
+        /// <summary>
+        /// ErrorArgumentInvokeFormat
+        /// </summary>
+        public string ErrorArgumentInvokeFormat { get; set; }
+
+        /// <summary>
+        /// ErrorArgumentInvokeFormatForObjectArray
+        /// </summary>
+        public string ErrorArgumentInvokeFormatForObjectArray { get; set; }
+
+        /// <summary>
+        /// ErrorBinaryInstall
+        /// </summary>
+        public string ErrorBinaryInstall { get; set; }
+
+        /// <summary>
+        /// ErrorDllLoad
+        /// </summary>
+        public string ErrorDllLoad { get; set; }
+
+        /// <summary>
+        /// ErrorExecuteThreadWindowHandle
+        /// </summary>
+        public string ErrorExecuteThreadWindowHandle { get; set; }
+
+        /// <summary>
+        /// ErrorFriendlySystem
+        /// </summary>
+        public string ErrorFriendlySystem { get; set; }
+
+        /// <summary>
+        /// ErrorInvalidThreadCall
+        /// </summary>
+        public string ErrorInvalidThreadCall { get; set; }
+
+        /// <summary>
+        /// ErrorManyFoundConstractorFormat
+        /// </summary>
+        public string ErrorManyFoundConstractorFormat { get; set; }
+
+        /// <summary>
+        /// ErrorManyFoundInvokeFormat
+        /// </summary>
+        public string ErrorManyFoundInvokeFormat { get; set; }
+
+        /// <summary>
+        /// ErrorNotFoundConstractorFormat
+        /// </summary>
+        public string ErrorNotFoundConstractorFormat { get; set; }
+
+        /// <summary>
+        /// ErrorNotFoundConstractorFormatForObjectArray
+        /// </summary>
+        public string ErrorNotFoundConstractorFormatForObjectArray { get; set; }
+
+        /// <summary>
+        /// ErrorNotFoundInvokeFormat
+        /// </summary>
+        public string ErrorNotFoundInvokeFormat { get; set; }
+
+        /// <summary>
+        /// ErrorOperationTypeArgInfoFormat
+        /// </summary>
+        public string ErrorOperationTypeArgInfoFormat { get; set; }
+
+        /// <summary>
+        /// ErrorOperationTypeArgInfoForObjectArrayFormat
+        /// </summary>
+        public string ErrorOperationTypeArgInfoForObjectArrayFormat { get; set; }
+
+        /// <summary>
+        /// ErrorProcessAcess
+        /// </summary>
+        public string ErrorProcessAcess { get; set; }
+
+        /// <summary>
+        /// ErrorProcessOperation
+        /// </summary>
+        public string ErrorProcessOperation { get; set; }
+
+        /// <summary>
+        /// ErrorTargetCpuDifference
+        /// </summary>
+        public string ErrorTargetCpuDifference { get; set; }
+
+        /// <summary>
+        /// ErrorUnpredicatableClrVersion
+        /// </summary>
+        public string ErrorUnpredicatableClrVersion { get; set; }
+
+        /// <summary>
+        /// HasNotEnumerable
+        /// </summary>
+        public string HasNotEnumerable { get; set; }
+
+        /// <summary>
+        /// NullObjectOperation
+        /// </summary>
+        public string NullObjectOperation { get; set; }
+
+        /// <summary>
+        /// OutOfCommunicationNo
+        /// </summary>
+        public string OutOfCommunicationNo { get; set; }
+
+        /// <summary>
+        /// OutOfMemory
+        /// </summary>
+        public string OutOfMemory { get; set; }
+
+        /// <summary>
+        /// UnknownTypeInfoFormat
+        /// </summary>
+        public string UnknownTypeInfoFormat { get; set; }
+
+        /// <summary>
+        /// ErrorAttachOtherDomainsNeedNet4
+        /// </summary>
+        public string ErrorAttachOtherDomainsNeedNet4 { get; set; }
 
         /// <summary>
         /// 特別。

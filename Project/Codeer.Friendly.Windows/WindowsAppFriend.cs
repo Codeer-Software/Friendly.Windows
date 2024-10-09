@@ -24,6 +24,14 @@ namespace Codeer.Friendly.Windows
 #endif
     public class WindowsAppFriend : AppFriend, IDisposable
 	{
+        /// <summary>
+        /// Set ICustomSerializer.
+        /// It must be a public class.
+        /// </summary>
+        /// <typeparam name="T">Class that implements ICustomSerializer.</typeparam>
+        public static void SetCustomSerializer<T>() where T : ICustomSerializer, new()
+            =>SerializeUtility.Serializer = new T();
+
         ExecuteContext _context;
         readonly int _processId;
         SystemController _systemController;

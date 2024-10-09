@@ -3,7 +3,7 @@
 	/// <summary>
 	/// システムコントロールタイプ。
 	/// </summary>
-	enum SystemControlType
+ 	public enum SystemControlType
 	{
 		/// <summary>
 		/// Friendly通信App側ウィンドウ開始。
